@@ -31,14 +31,16 @@ public class Game extends Scene {
     private double popNumber;
     private double startTime = System.currentTimeMillis();
     private double time;
+    private double initialPopulation;
+    private double rate;
 
 
     public Game(StackPane root) {
         super(root);
-        double initialPopulation = 1000;
-        double rate = 1;
-        time = System.currentTimeMillis() - startTime;
-        popNumber = Math.pow(initialPopulation * Math.E, rate * time);
+        initialPopulation = 1000;
+        rate = .015;
+        time = (System.currentTimeMillis() - startTime)/1000;
+        popNumber = Math.pow((initialPopulation * Math.E), (rate * time));
         Stage stage = Existence.fetch().getStage();
 
         canvas = new Canvas(stage.getWidth(),stage.getHeight());
@@ -85,10 +87,12 @@ public class Game extends Scene {
     public void render(GraphicsContext gc){
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        time = System.currentTimeMillis() - startTime;
+        time = (System.currentTimeMillis() - startTime)/1000;
+        popNumber = (initialPopulation + Math.pow((initialPopulation * Math.E), (rate * time)));
         this.updateUI();
     }
     public void updateUI(){
-        population.setText("Population: " + Double.toString(popNumber));
+        popNumber = Math.round(popNumber);
+        population.setText("Population: " + popNumber);
     }
 }
