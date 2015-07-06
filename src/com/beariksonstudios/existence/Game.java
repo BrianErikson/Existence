@@ -1,5 +1,6 @@
 package com.beariksonstudios.existence;
 
+import com.beariksonstudios.existence.objects.Settlement;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -17,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,19 +30,22 @@ public class Game extends Scene {
     private Canvas canvas;
     private Label population;
     private Label resource;
-    private double popNumber;
+    private Label year;
     private double startTime = System.currentTimeMillis();
     private double time;
-    private double initialPopulation;
-    private double rate;
+    private double currentYear;
+    private double initialYear;
+    public static double gameSecPerYear = 10;
+    private double yearsFromStart;
+    Settlement settlement;
 
 
     public Game(StackPane root) {
         super(root);
-        initialPopulation = 1000;
-        rate = .015;
+        settlement = new Settlement(this, 1000);
         time = (System.currentTimeMillis() - startTime)/1000;
-        popNumber = Math.pow((initialPopulation * Math.E), (rate * time));
+        initialYear = 1900;
+        currentYear = initialYear + (time/gameSecPerYear);
         Stage stage = Existence.fetch().getStage();
 
         canvas = new Canvas(stage.getWidth(),stage.getHeight());
@@ -61,10 +66,12 @@ public class Game extends Scene {
         VBox labelVBox = new VBox();
         labelVBox.setStyle("-fx-background-color: gainsboro;");
 
-        population = new Label("Population: " + popNumber);
+        population = new Label("Population: " + settlement.getPopulation());
         resource = new Label("Resource: Crocodiles");
+        year = new Label("Current Year: " + initialYear);
 
-        labelVBox.getChildren().addAll(population, resource);
+
+        labelVBox.getChildren().addAll(population, resource, year);
 
         return labelVBox;
     }
@@ -85,14 +92,19 @@ public class Game extends Scene {
     }
 
     public void render(GraphicsContext gc){
+        currentYear = initialYear + (time/gameSecPerYear);
+        yearsFromStart = currentYear - initialYear;
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         time = (System.currentTimeMillis() - startTime)/1000;
-        popNumber = (initialPopulation + Math.pow((initialPopulation * Math.E), (rate * time)));
+        settlement.render(gc);
         this.updateUI();
     }
     public void updateUI(){
-        popNumber = Math.round(popNumber);
-        population.setText("Population: " + popNumber);
+        population.setText("Population: " + (long) settlement.getPopulation());
+        year.setText("Current Year: " + Math.floor(currentYear));
+    }
+    public double getYearsFromStart() {
+        return yearsFromStart;
     }
 }
