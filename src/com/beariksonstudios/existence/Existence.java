@@ -24,8 +24,8 @@ public class Existence extends Application {
     public void start(Stage primaryStage) throws Exception {
         this.stage = primaryStage;
         primaryStage.setTitle("Existence");
-        primaryStage.setWidth(400);
-        primaryStage.setHeight(400);
+        primaryStage.setWidth(1280);
+        primaryStage.setHeight(720);
         StackPane root = new StackPane();
         primaryStage.setScene(new MainMenu(root));
         primaryStage.show();

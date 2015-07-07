@@ -31,6 +31,7 @@ public class Game extends Scene {
     private Label population;
     private Label resource;
     private Label year;
+    private Label type;
     private double startTime = System.currentTimeMillis();
     private double time;
     private double currentYear;
@@ -67,11 +68,12 @@ public class Game extends Scene {
         labelVBox.setStyle("-fx-background-color: gainsboro;");
 
         population = new Label("Population: " + settlement.getPopulation());
-        resource = new Label("Resource: Crocodiles");
+        resource = new Label("Resource: " + settlement.getResources());
         year = new Label("Current Year: " + initialYear);
+        type = new Label("Settlement Type: " + settlement.getType());
 
 
-        labelVBox.getChildren().addAll(population, resource, year);
+        labelVBox.getChildren().addAll(type ,population, resource, year);
 
         return labelVBox;
     }
@@ -103,6 +105,9 @@ public class Game extends Scene {
     public void updateUI(){
         population.setText("Population: " + (long) settlement.getPopulation());
         year.setText("Current Year: " + Math.floor(currentYear));
+        type.setText("Settlement Type: " + settlement.getType());
+        resource.setText("Resources: " + settlement.getResources());
+
     }
     public double getYearsFromStart() {
         return yearsFromStart;

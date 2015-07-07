@@ -11,20 +11,27 @@ public class Settlement {
     private double initialPopulation;
     private double rate;
     private double popNumber;
+    private SettlementType type;
     Game game;
     public Settlement(Game game, double initialPopulation) {
         this.game= game;
         this.initialPopulation = initialPopulation;
         rate = 0.7;
+        type = new Village();
 
     }
     public void render(GraphicsContext gc){
         popNumber = initialPopulation * Math.pow(Math.E, (rate * game.getYearsFromStart()));
         gc.setFill(Color.GAINSBORO);
-        double size = 20 + popNumber/50;
-        gc.fillRect(gc.getCanvas().getWidth()/2d - size/2d, gc.getCanvas().getHeight()/2d - size/2d, size, size);
+        type.render(popNumber, gc);
     }
     public double getPopulation() {
         return popNumber;
+    }
+    public String getType(){
+        return type.getName();
+    }
+    public String getResources(){
+        return type.getResources();
     }
 }
