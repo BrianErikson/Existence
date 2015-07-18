@@ -11,6 +11,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
@@ -18,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,12 +40,9 @@ public class Game extends Scene {
     private double initialYear;
     public static double gameSecPerYear = 10;
     private double yearsFromStart;
-    Settlement settlement;
-
-
+    private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
     public Game(StackPane root) {
         super(root);
-        settlement = new Settlement(this, 1000);
         time = (System.currentTimeMillis() - startTime)/1000;
         initialYear = 1900;
         currentYear = initialYear + (time/gameSecPerYear);
@@ -52,13 +51,21 @@ public class Game extends Scene {
         canvas = new Canvas(stage.getWidth(),stage.getHeight());
         root.getChildren().add(canvas);
         root.getChildren().add(createUI());
-
+        canvas.setPickOnBounds(true);
+        canvas.setFocusTraversable(true);
+        canvas.addEventFilter(MouseEvent.ANY, e -> canvas.requestFocus());
+        final Game game = this;
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            System.out.println("Clicked!");
+            settlements.add(new Settlement(game, 1000));
+        });
         startRenderTimer();
     }
 
     public BorderPane createUI() {
         BorderPane pane = new BorderPane();
         pane.setBottom(createBottomPane());
+        pane.setPickOnBounds(false);
 
         return pane;
     }
@@ -66,11 +73,10 @@ public class Game extends Scene {
     private VBox createBottomPane() {
         VBox labelVBox = new VBox();
         labelVBox.setStyle("-fx-background-color: gainsboro;");
-
-        population = new Label("Population: " + settlement.getPopulation());
-        resource = new Label("Resource: " + settlement.getResources());
+        population = new Label("Population: " + "No current Settlements in this Kingdom me Lord");
+        resource = new Label("Resource: " + "Me Lord! We have no resources!");
+        type = new Label("Settlement Type: " + "Your people wander and suffer aimlessly");
         year = new Label("Current Year: " + initialYear);
-        type = new Label("Settlement Type: " + settlement.getType());
 
 
         labelVBox.getChildren().addAll(type ,population, resource, year);
@@ -79,7 +85,7 @@ public class Game extends Scene {
     }
 
     private void startRenderTimer() {
-        final Timer renderTimer = new Timer("RenderTimer");
+        final Timer renderTimer = new Timer("RenderTimer", true);
         renderTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -99,14 +105,18 @@ public class Game extends Scene {
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         time = (System.currentTimeMillis() - startTime)/1000;
-        settlement.render(gc);
+        for (Settlement settlement : settlements) {
+            settlement.render(gc);
+        }
         this.updateUI();
     }
     public void updateUI(){
-        population.setText("Population: " + (long) settlement.getPopulation());
+        if(settlements.size() > 0) {
+            population.setText("Population: " + (long) settlements.get(0).getPopulation());
+            type.setText("Settlement Type: " + settlements.get(0).getType());
+            resource.setText("Resources: " + settlements.get(0).getResources());
+        }
         year.setText("Current Year: " + Math.floor(currentYear));
-        type.setText("Settlement Type: " + settlement.getType());
-        resource.setText("Resources: " + settlement.getResources());
 
     }
     public double getYearsFromStart() {

@@ -19,11 +19,12 @@ public class Village implements SettlementType{
 
     @Override
     public double getGrowthRate() {
-        return 0.015d;
+        return 0.5d;
     }
 
     @Override
     public String getResources() {
         return "Water";
     }
+
 }
