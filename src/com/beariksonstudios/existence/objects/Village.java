@@ -1,20 +1,31 @@
 package com.beariksonstudios.existence.objects;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.*;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.transform.Affine;
+
+import java.awt.*;
 
 /**
  * Created by Neal on 7/7/2015.
  */
 public class Village implements SettlementType{
+    javafx.scene.shape.Rectangle rectangle = new Rectangle();
     @Override
     public String getName() {
         return "Village";
     }
 
     @Override
-    public void render(double population, GraphicsContext gc) {
+    public void render(double population, GraphicsContext gc, Affine transform) {
         double size = 20 + population/50;
-        gc.fillRect(gc.getCanvas().getWidth()/2d - size/2d, gc.getCanvas().getHeight()/2d - size/2d, size, size);
+        rectangle.setWidth(size);
+        rectangle.setHeight(size);
+        rectangle.setX(transform.getTx() - rectangle.getWidth()/2d);
+        rectangle.setY(transform.getTy() - rectangle.getHeight()/2d);
+        gc.fillRect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
     }
 
     @Override
@@ -25,6 +36,11 @@ public class Village implements SettlementType{
     @Override
     public String getResources() {
         return "Water";
+    }
+
+    @Override
+    public Shape getShape() {
+        return rectangle;
     }
 
 }

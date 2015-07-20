@@ -2,6 +2,9 @@ package com.beariksonstudios.existence.objects;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.scene.transform.Affine;
+
 
 /**
  * Created by Neal on 7/17/2015.
@@ -23,7 +26,7 @@ public class City implements SettlementType {
     }
 
     @Override
-    public void render(double population, GraphicsContext gc) {
+    public void render(double population, GraphicsContext gc, Affine transform) {
         double[] finalX = new double[4];
         double[] finalY = new double[4];
         diamondScale = population * 0.01d;
@@ -33,10 +36,13 @@ public class City implements SettlementType {
         }
         double centerX = (finalX[1] + finalX[3])/2d;
         double centerY = (finalY[0] + finalY[2])/2d;
-        gc.translate(gc.getCanvas().getWidth()/2d - centerX, gc.getCanvas().getHeight()/2d - centerY);
-        gc.setFill(Color.BLACK);
+        Affine localTransform = transform.clone();
+        localTransform.setTx(localTransform.getTx()-centerX);
+        localTransform.setTy(localTransform.getTy()-centerY);
+        gc.setTransform(localTransform);
+        gc.setFill(Color.YELLOW);
         gc.fillPolygon(finalX, finalY, diamondSize);
-        gc.translate(-(gc.getCanvas().getWidth()/2d - centerX), -(gc.getCanvas().getHeight()/2d - centerY));
+        gc.setTransform(new Affine());
     }
 
     @Override
@@ -47,5 +53,10 @@ public class City implements SettlementType {
     @Override
     public String getResources() {
         return "HoloLens/Oculus Rifts";
+    }
+
+    @Override
+    public Shape getShape() {
+        return null;
     }
 }

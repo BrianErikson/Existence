@@ -2,6 +2,9 @@ package com.beariksonstudios.existence.objects;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import javafx.scene.transform.Affine;
+
 
 /**
  * Created by Neal on 7/18/2015.
@@ -23,7 +26,7 @@ public class Metropolis implements SettlementType {
     }
 
     @Override
-    public void render(double population, GraphicsContext gc) {
+    public void render(double population, GraphicsContext gc, Affine transform) {
         double[] finalX = new double[11];
         double[] finalY = new double[11];
         starScale = population * 0.001d;
@@ -33,10 +36,13 @@ public class Metropolis implements SettlementType {
         }
         double centerX = (finalX[3] + finalX[7] + finalX[10])/3d;
         double centerY = (finalY[3] + finalY[7] + finalY[10])/3d;
-        gc.translate(gc.getCanvas().getWidth()/2d - centerX, gc.getCanvas().getHeight()/2d - centerY);
+        Affine localTransform = transform.clone();
+        localTransform.setTx(localTransform.getTx()-centerX);
+        localTransform.setTy(localTransform.getTy()-centerY);
+        gc.setTransform(localTransform);
         gc.setFill(Color.BLUE);
         gc.fillPolygon(finalX, finalY, starSize);
-        gc.translate(-(gc.getCanvas().getWidth()/2d - centerX), -(gc.getCanvas().getHeight()/2d - centerY));
+        gc.setTransform(new Affine());
 
     }
 
@@ -48,5 +54,10 @@ public class Metropolis implements SettlementType {
     @Override
     public String getResources() {
         return "Hoverboard, Instant Obesity reducers, Robot Wives";
+    }
+
+    @Override
+    public Shape getShape() {
+        return null;
     }
 }

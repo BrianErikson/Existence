@@ -17,6 +17,7 @@ import javafx.scene.layout.StackPane;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Game extends Scene {
     private Label resource;
     private Label year;
     private Label type;
+    private Label globalPop;
     private double startTime = System.currentTimeMillis();
     private double time;
     private double currentYear;
@@ -41,10 +43,13 @@ public class Game extends Scene {
     public static double gameSecPerYear = 10;
     private double yearsFromStart;
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
+    private double globalPopulation;
+    private Settlement target;
     public Game(StackPane root) {
         super(root);
         time = (System.currentTimeMillis() - startTime)/1000;
         initialYear = 1900;
+        globalPopulation = 0d;
         currentYear = initialYear + (time/gameSecPerYear);
         Stage stage = Existence.fetch().getStage();
 
@@ -57,7 +62,21 @@ public class Game extends Scene {
         final Game game = this;
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             System.out.println("Clicked!");
-            settlements.add(new Settlement(game, 1000));
+            boolean hit = false;
+            for(Settlement settlement: settlements){
+                Shape shape = settlement.getShape();
+                hit = shape.contains(event.getX(),event.getY());
+                if(hit){
+                    target = settlement;
+                    return;
+                }
+            }
+            if(!hit){
+                settlements.add(new Settlement(game, 1000, event.getX(), event.getY()));
+                if(settlements.size() == 1){
+                    target = settlements.get(0);
+                }
+            }
         });
         startRenderTimer();
     }
@@ -77,9 +96,10 @@ public class Game extends Scene {
         resource = new Label("Resource: " + "Me Lord! We have no resources!");
         type = new Label("Settlement Type: " + "Your people wander and suffer aimlessly");
         year = new Label("Current Year: " + initialYear);
+        globalPop = new Label("Global Population: " + "There are no homes for our women to give birth");
 
 
-        labelVBox.getChildren().addAll(type ,population, resource, year);
+        labelVBox.getChildren().addAll(globalPop ,type ,population, resource, year);
 
         return labelVBox;
     }
@@ -105,21 +125,30 @@ public class Game extends Scene {
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         time = (System.currentTimeMillis() - startTime)/1000;
+        globalPopulation = 0d;
         for (Settlement settlement : settlements) {
             settlement.render(gc);
+            globalPopulation += settlement.getPopulation();
         }
         this.updateUI();
+
     }
     public void updateUI(){
         if(settlements.size() > 0) {
-            population.setText("Population: " + (long) settlements.get(0).getPopulation());
-            type.setText("Settlement Type: " + settlements.get(0).getType());
-            resource.setText("Resources: " + settlements.get(0).getResources());
+            population.setText("Population: " + (long) target.getPopulation());
+            type.setText("Settlement Type: " + target.getType());
+            resource.setText("Resources: " + target.getResources());
+            globalPop.setText("Global Population: " + globalPopulation);
+
         }
         year.setText("Current Year: " + Math.floor(currentYear));
 
     }
     public double getYearsFromStart() {
         return yearsFromStart;
+    }
+
+    public double getCurrentYear() {
+        return currentYear;
     }
 }

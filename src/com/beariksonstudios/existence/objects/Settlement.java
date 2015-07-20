@@ -3,6 +3,11 @@ package com.beariksonstudios.existence.objects;
 import com.beariksonstudios.existence.Game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 
 /**
  * Created by Neal on 7/6/2015.
@@ -14,18 +19,31 @@ public class Settlement {
     private double previousCalc;
     private double lastChangeYear;
     private double currentGrowthRate;
+    private Affine transform;
+    private Scale scale;
+    private Rotate rotate;
+    private Translate translate;
+    private double startYear;
+    private double yearsFromBuild;
     Game game;
-    public Settlement(Game game, double initialPopulation) {
+    public Settlement(Game game, double initialPopulation, double x, double y) {
         this.game= game;
         this.initialPopulation = initialPopulation;
         popNumber = 0d;
         previousCalc = 0d;
         type = new Village();
+        scale = new Scale();
+        rotate = new Rotate();
+        translate = new Translate();
+        translate.setX(x);
+        translate.setY(y);
+        startYear = game.getYearsFromStart();
+        this.updateTransform();
 
     }
     public void render(GraphicsContext gc){
-        double currentCalc = initialPopulation * Math.pow(Math.E, (getRate() * (game.getYearsFromStart()-lastChangeYear)));
-        System.out.println(game.getYearsFromStart()-lastChangeYear);
+        yearsFromBuild = game.getYearsFromStart() - startYear;
+        double currentCalc = initialPopulation * Math.pow(Math.E, (getRate() * (yearsFromBuild-lastChangeYear)));
         double populationDiff = currentCalc - previousCalc;
         if(populationDiff > 0){
             previousCalc = currentCalc;
@@ -33,7 +51,7 @@ public class Settlement {
         }
         this.checkType();
         gc.setFill(Color.GAINSBORO);
-        type.render(popNumber, gc);
+        type.render(popNumber, gc, transform);
     }
     public double getPopulation() {
         return popNumber;
@@ -70,6 +88,15 @@ public class Settlement {
         currentGrowthRate = newGrowthRate;
         lastChangeYear = game.getYearsFromStart();
         initialPopulation = popNumber;
-        previousCalc =  initialPopulation * Math.pow(Math.E, (getRate() * (game.getYearsFromStart()-lastChangeYear)));
+        previousCalc =  initialPopulation * Math.pow(Math.E, (getRate() * (yearsFromBuild-lastChangeYear)));
+    }
+    public void updateTransform(){
+        transform = new Affine();
+        transform.append(scale);
+        transform.append(rotate);
+        transform.append(translate);
+    }
+    public Shape getShape(){
+        return type.getShape();
     }
 }

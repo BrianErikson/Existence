@@ -1,8 +1,6 @@
-SetPosition of settlement where clicked
-Can create multiple settlements
-Take away population from settlement when new one is created
-Create Global population counter
-can see settlement info by clicking on a given settlement
+Player can name each settlement
+implements shapes for other settlement type, when clicked
+Take away population from settlement when new one is create
 Make scrolling/paning possible
 Fix scaling rates of types
 Make map with resources

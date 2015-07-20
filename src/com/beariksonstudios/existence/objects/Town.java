@@ -4,7 +4,11 @@ import com.sun.javafx.geom.transform.Affine3D;
 import com.sun.javafx.geom.transform.BaseTransform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
+
+
 
 /**
  * Created by Neal on 7/13/2015.
@@ -27,7 +31,7 @@ public class Town implements SettlementType {
     }
 
     @Override
-    public void render(double population, GraphicsContext gc) {
+    public void render(double population, GraphicsContext gc, Affine transform) {
         double[] finalX = new double[3];
         double[] finalY = new double[3];
         triangleScale = population * 0.01d;
@@ -37,11 +41,13 @@ public class Town implements SettlementType {
         }
         double centroidX = (finalX[0] + finalX[1] + finalX[2])/3d;
         double centroidY = (finalY[0] + finalY[1] + finalY[2])/3d;
-        gc.translate(gc.getCanvas().getWidth()/2d - centroidX, gc.getCanvas().getHeight()/2d - centroidY);
+        Affine localTransform = transform.clone();
+        localTransform.setTx(localTransform.getTx()-centroidX);
+        localTransform.setTy(localTransform.getTy() - centroidY);
+        gc.setTransform(localTransform);
         gc.setFill(Color.BLACK);
         gc.fillPolygon(finalX, finalY, triangleSize);
-        gc.translate(-(gc.getCanvas().getWidth()/2d - centroidX), -(gc.getCanvas().getHeight()/2d - centroidY));
-
+        gc.setTransform(new Affine());
     }
 
     @Override
@@ -52,6 +58,11 @@ public class Town implements SettlementType {
     @Override
     public String getResources() {
         return "Wheat";
+    }
+
+    @Override
+    public Shape getShape() {
+        return null;
     }
 
 }
