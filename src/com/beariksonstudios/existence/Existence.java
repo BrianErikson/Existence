@@ -32,6 +32,7 @@ public class Existence extends Application {
         primaryStage.setTitle("Existence");
         primaryStage.setWidth(1280);
         primaryStage.setHeight(720);
+
         StackPane root = new StackPane();
         primaryStage.setScene(new MainMenu(root));
         primaryStage.show();
