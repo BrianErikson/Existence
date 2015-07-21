@@ -17,25 +17,29 @@ import javafx.scene.transform.Translate;
  * Created by Neal on 7/6/2015.
  */
 public class Settlement {
-    Game game;
+    private Game game;
     private double initialPopulation;
-    private double popNumber;
+    private double currentPopulation;
+    private double lastPopCalc;
+
+    private double startYear;
+    private double age;
+    private double lastGrowthChange; // last year in which the growth changed
+
     private SettlementType type;
-    private double previousCalc;
-    private double lastChangeYear;
     private double currentGrowthRate;
+    
     private Affine transform;
     private Scale scale;
     private Rotate rotate;
     private Translate translate;
-    private double startYear;
-    private double yearsFromBuild;
+
 
     public Settlement(Game game, double initialPopulation, double x, double y) {
         this.game = game;
         this.initialPopulation = initialPopulation;
-        popNumber = 0d;
-        previousCalc = 0d;
+        currentPopulation = 0d;
+        lastPopCalc = 0d;
         type = new Village();
         scale = new Scale();
         rotate = new Rotate();
@@ -48,20 +52,20 @@ public class Settlement {
     }
 
     public void render(GraphicsContext gc) {
-        yearsFromBuild = game.getYearsFromStart() - startYear;
-        double currentCalc = initialPopulation * Math.pow(Math.E, (getRate() * (yearsFromBuild - lastChangeYear)));
-        double populationDiff = currentCalc - previousCalc;
+        age = game.getYearsFromStart() - startYear;
+        double currentPopCalc = initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
+        double populationDiff = currentPopCalc - lastPopCalc;
         if (populationDiff > 0) {
-            previousCalc = currentCalc;
-            popNumber += populationDiff;
+            lastPopCalc = currentPopCalc;
+            currentPopulation += populationDiff;
         }
         this.checkType();
         gc.setFill(Color.GAINSBORO);
-        type.render(popNumber, gc, transform);
+        type.render(currentPopulation, gc, transform);
     }
 
     public double getPopulation() {
-        return popNumber;
+        return currentPopulation;
     }
 
     public String getType() {
@@ -90,15 +94,15 @@ public class Settlement {
         }
     }
 
-    public double getRate() {
-        return type.getGrowthRate();
+    public double getCurrentGrowthRate() {
+        return currentGrowthRate;
     }
 
     public void changeGrowthRate(double newGrowthRate) {
         currentGrowthRate = newGrowthRate;
-        lastChangeYear = game.getYearsFromStart();
-        initialPopulation = popNumber;
-        previousCalc = initialPopulation * Math.pow(Math.E, (getRate() * (yearsFromBuild - lastChangeYear)));
+        lastGrowthChange = game.getYearsFromStart();
+        initialPopulation = currentPopulation;
+        lastPopCalc = initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
     }
 
     public void updateTransform() {
