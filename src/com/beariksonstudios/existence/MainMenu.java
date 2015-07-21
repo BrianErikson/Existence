@@ -25,7 +25,7 @@ public class MainMenu extends Scene {
                 Stage stage = Existence.fetch().getStage();
 
                 StackPane root = new StackPane();
-                Scene gameScene =  new Game(root);
+                Scene gameScene = new Game(root);
                 stage.setScene(gameScene);
 
                 stage.show();

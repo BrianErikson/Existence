@@ -2,26 +2,19 @@ package com.beariksonstudios.existence;
 
 import com.beariksonstudios.existence.objects.Settlement;
 import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +23,7 @@ import java.util.TimerTask;
  */
 public class Game extends Scene {
     public static long fps = 30; // 30fps
+    public static double gameSecPerYear = 10;
     private Canvas canvas;
     private Label population;
     private Label resource;
@@ -40,20 +34,20 @@ public class Game extends Scene {
     private double time;
     private double currentYear;
     private double initialYear;
-    public static double gameSecPerYear = 10;
     private double yearsFromStart;
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
     private double globalPopulation;
     private Settlement target;
+
     public Game(StackPane root) {
         super(root);
-        time = (System.currentTimeMillis() - startTime)/1000;
+        time = (System.currentTimeMillis() - startTime) / 1000;
         initialYear = 1900;
         globalPopulation = 0d;
-        currentYear = initialYear + (time/gameSecPerYear);
+        currentYear = initialYear + (time / gameSecPerYear);
         Stage stage = Existence.fetch().getStage();
 
-        canvas = new Canvas(stage.getWidth(),stage.getHeight());
+        canvas = new Canvas(stage.getWidth(), stage.getHeight());
         root.getChildren().add(canvas);
         root.getChildren().add(createUI());
         canvas.setPickOnBounds(true);
@@ -63,18 +57,18 @@ public class Game extends Scene {
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             System.out.println("Clicked!");
             boolean hit = false;
-            for(Settlement settlement: settlements){
+            for (Settlement settlement : settlements) {
                 Shape shape = settlement.getShape();
-                hit = shape.contains(event.getX(),event.getY());
-                if(hit){
+                hit = shape.contains(event.getX(), event.getY());
+                if (hit) {
                     target = settlement;
 
                     return;
                 }
             }
-            if(!hit){
-                settlements.add(new Settlement(game, 1000, event.getX(), event.getY()));
-                if(settlements.size() == 1){
+            if (!hit) {
+                settlements.add(new Settlement(game, 9000, event.getX(), event.getY()));
+                if (settlements.size() == 1) {
                     target = settlements.get(0);
                 }
             }
@@ -99,8 +93,7 @@ public class Game extends Scene {
         year = new Label("Current Year: " + initialYear);
         globalPop = new Label("Global Population: " + "There are no homes for our women to give birth");
 
-
-        labelVBox.getChildren().addAll(globalPop ,type ,population, resource, year);
+        labelVBox.getChildren().addAll(globalPop, type, population, resource, year);
 
         return labelVBox;
     }
@@ -120,12 +113,12 @@ public class Game extends Scene {
         }, 0l, 1000l / fps);
     }
 
-    public void render(GraphicsContext gc){
-        currentYear = initialYear + (time/gameSecPerYear);
+    public void render(GraphicsContext gc) {
+        currentYear = initialYear + (time / gameSecPerYear);
         yearsFromStart = currentYear - initialYear;
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        time = (System.currentTimeMillis() - startTime)/1000;
+        time = (System.currentTimeMillis() - startTime) / 1000;
         globalPopulation = 0d;
         for (Settlement settlement : settlements) {
             settlement.render(gc);
@@ -134,8 +127,9 @@ public class Game extends Scene {
         this.updateUI();
 
     }
-    public void updateUI(){
-        if(settlements.size() > 0) {
+
+    public void updateUI() {
+        if (settlements.size() > 0) {
             population.setText("Population: " + (long) target.getPopulation());
             type.setText("Settlement Type: " + target.getType());
             resource.setText("Resources: " + target.getResources());
@@ -145,6 +139,7 @@ public class Game extends Scene {
         year.setText("Current Year: " + Math.floor(currentYear));
 
     }
+
     public double getYearsFromStart() {
         return yearsFromStart;
     }

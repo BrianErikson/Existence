@@ -3,7 +3,6 @@ package com.beariksonstudios.existence;
 import javafx.application.Application;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import sun.applet.Main;
 
 /**
  * Created by Neal on 7/3/2015.
@@ -16,8 +15,14 @@ public class Existence extends Application {
         singleton = this;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
+    }
+
+    public static Existence fetch() {
+        if (singleton == null)
+            singleton = new Existence();
+        return singleton;
     }
 
     @Override
@@ -29,12 +34,6 @@ public class Existence extends Application {
         StackPane root = new StackPane();
         primaryStage.setScene(new MainMenu(root));
         primaryStage.show();
-    }
-
-    public static Existence fetch() {
-        if (singleton == null)
-            singleton = new Existence();
-        return singleton;
     }
 
     public Stage getStage() {

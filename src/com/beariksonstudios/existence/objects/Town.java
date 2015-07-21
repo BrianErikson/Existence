@@ -1,15 +1,11 @@
 package com.beariksonstudios.existence.objects;
 
-import com.sun.javafx.geom.transform.Affine3D;
-import com.sun.javafx.geom.transform.BaseTransform;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Affine;
-import javafx.scene.transform.Transform;
-
 
 
 /**
@@ -18,13 +14,14 @@ import javafx.scene.transform.Transform;
 public class Town implements SettlementType {
     Polygon triangle;
 
-    public Town(){
+    public Town() {
         triangle = new Polygon(
                 -1, 0,
                 1, 0,
                 0, -1
         );
     }
+
     @Override
     public String getName() {
         return "Town";
@@ -40,11 +37,11 @@ public class Town implements SettlementType {
         double[] xPoints = getXPoints(triangle);
         double[] yPoints = getYPoints(triangle);
 
-        double centroidX = (xPoints[0] + xPoints[1] + xPoints[2])/3d;
-        double centroidY = (yPoints[0] + yPoints[1] + yPoints[2])/3d;
+        double centroidX = (xPoints[0] + xPoints[1] + xPoints[2]) / 3d;
+        double centroidY = (yPoints[0] + yPoints[1] + yPoints[2]) / 3d;
 
         Affine localTransform = transform.clone();
-        triangle.setTranslateX(localTransform.getTx()-centroidX);
+        triangle.setTranslateX(localTransform.getTx() - centroidX);
         triangle.setTranslateY(localTransform.getTy() - centroidY);
 
         gc.setTransform(localTransform);
@@ -69,28 +66,28 @@ public class Town implements SettlementType {
     }
 
     private double[] getXPoints(Polygon gon) {
-        double[] arr = new double[gon.getPoints().size()/2]; // arr = 3 index places
+        double[] arr = new double[gon.getPoints().size() / 2]; // arr = 3 index places
         ObservableList<Double> points = gon.getPoints(); // 6 index places
-        for (int i  = 0; i < points.size(); i+= 2) {
+        for (int i = 0; i < points.size(); i += 2) {
             int index = i;
-             if (i > 1)
-                 index /= 2;
+            if (i > 1)
+                index /= 2;
 
-            arr[index] = points.get(i);
+            arr[index] = points.get(i) * gon.getScaleX();
         }
 
         return arr;
     }
 
     private double[] getYPoints(Polygon gon) {
-        double[] arr = new double[gon.getPoints().size()/2];
+        double[] arr = new double[gon.getPoints().size() / 2];
         ObservableList<Double> points = gon.getPoints();
-        for (int i  = 1; i < points.size(); i+= 2) {
+        for (int i = 1; i < points.size(); i += 2) {
             int index = i;
             if (i > 1)
                 index /= 2;
 
-            arr[index] = points.get(i);
+            arr[index] = points.get(i) * gon.getScaleY();
         }
 
         return arr;
