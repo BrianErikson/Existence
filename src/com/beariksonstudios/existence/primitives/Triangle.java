@@ -12,6 +12,7 @@ public class Triangle extends Polygon {
                 0, -1);
     }
 
+    @Override
     public Point2D getCentroid() {
         double[] xPoints = getXPoints();
         double[] yPoints = getYPoints();
