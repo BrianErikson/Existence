@@ -10,7 +10,7 @@ import javafx.scene.transform.Affine;
  * Created by Neal on 7/7/2015.
  */
 public class Village implements SettlementType {
-    javafx.scene.shape.Rectangle rectangle = new Rectangle();
+    Rectangle rectangle = new Rectangle();
 
     @Override
     public String getName() {

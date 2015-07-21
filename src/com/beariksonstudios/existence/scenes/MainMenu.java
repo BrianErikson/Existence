@@ -1,6 +1,7 @@
 package com.beariksonstudios.existence.scenes;
 
 import com.beariksonstudios.existence.Existence;
+import com.beariksonstudios.existence.scenes.game.Game;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;

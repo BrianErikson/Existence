@@ -1,6 +1,6 @@
 package com.beariksonstudios.existence.gameobjects.settlement;
 
-import com.beariksonstudios.existence.scenes.Game;
+import com.beariksonstudios.existence.scenes.game.Game;
 import com.beariksonstudios.existence.gameobjects.settlement.types.City;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
@@ -28,7 +28,7 @@ public class Settlement {
 
     private SettlementType type;
     private double currentGrowthRate;
-    
+
     private Affine transform;
     private Scale scale;
     private Rotate rotate;
