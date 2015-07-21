@@ -1,6 +1,7 @@
-package com.beariksonstudios.existence;
+package com.beariksonstudios.existence.scenes;
 
-import com.beariksonstudios.existence.objects.Settlement;
+import com.beariksonstudios.existence.Existence;
+import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;

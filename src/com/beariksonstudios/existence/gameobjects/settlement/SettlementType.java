@@ -1,4 +1,4 @@
-package com.beariksonstudios.existence.objects;
+package com.beariksonstudios.existence.gameobjects.settlement;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.Shape;

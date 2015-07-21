@@ -1,6 +1,10 @@
-package com.beariksonstudios.existence.objects;
+package com.beariksonstudios.existence.gameobjects.settlement;
 
-import com.beariksonstudios.existence.Game;
+import com.beariksonstudios.existence.scenes.Game;
+import com.beariksonstudios.existence.gameobjects.settlement.types.City;
+import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
+import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
+import com.beariksonstudios.existence.gameobjects.settlement.types.Village;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;

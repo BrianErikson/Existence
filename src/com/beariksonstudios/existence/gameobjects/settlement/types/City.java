@@ -1,5 +1,6 @@
-package com.beariksonstudios.existence.objects;
+package com.beariksonstudios.existence.gameobjects.settlement.types;
 
+import com.beariksonstudios.existence.gameobjects.settlement.SettlementType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;

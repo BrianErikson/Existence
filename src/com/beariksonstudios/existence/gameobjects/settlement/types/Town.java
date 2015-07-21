@@ -1,6 +1,7 @@
-package com.beariksonstudios.existence.objects;
+package com.beariksonstudios.existence.gameobjects.settlement.types;
 
 import com.beariksonstudios.existence.primitives.Triangle;
+import com.beariksonstudios.existence.gameobjects.settlement.SettlementType;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

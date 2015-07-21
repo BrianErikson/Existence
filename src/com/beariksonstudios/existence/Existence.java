@@ -1,5 +1,6 @@
 package com.beariksonstudios.existence;
 
+import com.beariksonstudios.existence.scenes.MainMenu;
 import javafx.application.Application;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
