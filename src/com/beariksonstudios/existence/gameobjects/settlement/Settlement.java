@@ -38,28 +38,35 @@ public class Settlement {
     public Settlement(Game game, double initialPopulation, double x, double y) {
         this.game = game;
         this.initialPopulation = initialPopulation;
-        currentPopulation = 0d;
-        lastPopCalc = 0d;
+
+        currentPopulation = initialPopulation;
+        lastPopCalc = currentPopulation;
+        startYear = game.getYearsFromStart();
+
         type = new Village();
+        setGrowthRate(type.getGrowthRate());
+
         scale = new Scale();
         rotate = new Rotate();
         translate = new Translate();
         translate.setX(x);
         translate.setY(y);
-        startYear = game.getYearsFromStart();
-        this.updateTransform();
 
+        this.updateTransform();
     }
 
     public void render(GraphicsContext gc) {
         age = game.getYearsFromStart() - startYear;
-        double currentPopCalc = initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
+
+        double currentPopCalc = calculatePopulation();
         double populationDiff = currentPopCalc - lastPopCalc;
         if (populationDiff > 0) {
             lastPopCalc = currentPopCalc;
             currentPopulation += populationDiff;
         }
-        this.checkType();
+
+        checkSettlementType();
+
         gc.setFill(Color.GAINSBORO);
         type.render(currentPopulation, gc, transform);
     }
@@ -76,7 +83,7 @@ public class Settlement {
         return type.getResources();
     }
 
-    public void checkType() {
+    public void checkSettlementType() {
         if (this.getPopulation() > 20000) {
             if (!(type instanceof Metropolis)) {
                 type = new Metropolis();
@@ -84,12 +91,12 @@ public class Settlement {
         } else if (this.getPopulation() > 15000) {
             if (!(type instanceof City)) {
                 type = new City();
-                this.changeGrowthRate(type.getGrowthRate());
+                this.setGrowthRate(type.getGrowthRate());
             }
         } else if (this.getPopulation() > 10000) {
             if (!(type instanceof Town)) {
                 type = new Town();
-                this.changeGrowthRate(type.getGrowthRate());
+                this.setGrowthRate(type.getGrowthRate());
             }
         }
     }
@@ -98,7 +105,7 @@ public class Settlement {
         return currentGrowthRate;
     }
 
-    public void changeGrowthRate(double newGrowthRate) {
+    public void setGrowthRate(double newGrowthRate) {
         currentGrowthRate = newGrowthRate;
         lastGrowthChange = game.getYearsFromStart();
         initialPopulation = currentPopulation;
@@ -110,6 +117,10 @@ public class Settlement {
         transform.append(scale);
         transform.append(rotate);
         transform.append(translate);
+    }
+
+    public double calculatePopulation() {
+        return initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
     }
 
     public Shape getShape() {
