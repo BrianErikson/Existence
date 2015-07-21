@@ -68,6 +68,7 @@ public class Game extends Scene {
                 hit = shape.contains(event.getX(),event.getY());
                 if(hit){
                     target = settlement;
+
                     return;
                 }
             }
@@ -138,7 +139,7 @@ public class Game extends Scene {
             population.setText("Population: " + (long) target.getPopulation());
             type.setText("Settlement Type: " + target.getType());
             resource.setText("Resources: " + target.getResources());
-            globalPop.setText("Global Population: " + globalPopulation);
+            globalPop.setText("Global Population: " + Math.floor(globalPopulation));
 
         }
         year.setText("Current Year: " + Math.floor(currentYear));
