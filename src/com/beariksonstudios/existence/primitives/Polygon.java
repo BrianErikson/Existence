@@ -3,14 +3,20 @@ package com.beariksonstudios.existence.primitives;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 
+import java.util.ArrayList;
+
 /**
  * Created by BrianErikson on 7/21/2015.
  */
 public abstract class Polygon extends javafx.scene.shape.Polygon {
+    ArrayList<Double> model;
     public Polygon(double... points) {
         super(points);
+        model = new ArrayList<Double>();
+        for (int i = 0; i < points.length; i++) {
+            model.add(points[i]);
+        }
     }
-
     /**
      * Returns properly scaled coordinates
      * @return
@@ -23,7 +29,7 @@ public abstract class Polygon extends javafx.scene.shape.Polygon {
             if (i > 1)
                 index /= 2;
 
-            arr[index] = points.get(i) * getScaleX();
+            arr[index] = points.get(i);
         }
 
         return arr;
@@ -41,15 +47,18 @@ public abstract class Polygon extends javafx.scene.shape.Polygon {
             if (i > 1)
                 index /= 2;
 
-            arr[index] = points.get(i) * getScaleY();
+            arr[index] = points.get(i);
         }
 
         return arr;
     }
 
     public void setScale(double scale) {
-        setScaleX(scale);
-        setScaleY(scale);
+        ArrayList<Double> scaledModel = new ArrayList<>();
+        for(int i = 0; i < model.size();i++ ){
+            scaledModel.add(model.get(i) * scale);
+        }
+        getPoints().setAll(scaledModel);
     }
 
     /**
