@@ -3,23 +3,18 @@ package com.beariksonstudios.existence.scenes.game;
 import com.beariksonstudios.existence.Existence;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogEvent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -55,6 +50,9 @@ public class Game extends Scene {
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
     private Settlement target;
 
+    private Translate cameraTranslation;
+    public static int MOVE_SPEED = 10;
+
     public Game(StackPane root) {
         super(root);
         Stage stage = Existence.fetch().getStage();
@@ -68,11 +66,17 @@ public class Game extends Scene {
         canvas = new Canvas(stage.getWidth(), stage.getHeight());
         canvas.setPickOnBounds(true);
         canvas.setFocusTraversable(true);
+
         canvas.addEventFilter(MouseEvent.ANY, e -> canvas.requestFocus());
+        canvas.addEventFilter(KeyEvent.ANY, e -> canvas.requestFocus());
+
         canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new CanvasMouseEventHandler(this));
+        canvas.addEventHandler(KeyEvent.KEY_PRESSED, new CanvasKeyEventHandler(this));
 
         root.getChildren().add(canvas);
         root.getChildren().add(getNewUiInstance());
+
+        cameraTranslation = new Translate(0,0);
 
         startRenderTimer();
     }
@@ -121,7 +125,7 @@ public class Game extends Scene {
 
         globalPopulation = 0d;
         for (Settlement settlement : settlements) {
-            settlement.render(gc);
+            settlement.render(gc, cameraTranslation);
             globalPopulation += settlement.getPopulation();
         }
 
@@ -179,5 +183,9 @@ public class Game extends Scene {
             if(!result.get().isEmpty())
                 createNewSettlement(result.get(), x, y);
         }
+    }
+
+    public Translate getCameraTransform() {
+        return cameraTranslation;
     }
 }

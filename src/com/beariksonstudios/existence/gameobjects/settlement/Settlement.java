@@ -1,17 +1,14 @@
 package com.beariksonstudios.existence.gameobjects.settlement;
 
-import com.beariksonstudios.existence.scenes.game.Game;
 import com.beariksonstudios.existence.gameobjects.settlement.types.City;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Village;
+import com.beariksonstudios.existence.scenes.game.Game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
-import javafx.scene.transform.Affine;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
+import javafx.scene.transform.*;
 
 /**
  * Created by Neal on 7/6/2015.
@@ -58,7 +55,7 @@ public class Settlement {
         this.updateTransform();
     }
 
-    public void render(GraphicsContext gc) {
+    public void render(GraphicsContext gc, Transform camera) {
         age = game.getYearsFromStart() - startYear;
 
         double currentPopCalc = calculatePopulation();
@@ -71,7 +68,10 @@ public class Settlement {
         checkSettlementType();
 
         gc.setFill(Color.GAINSBORO);
-        type.render(currentPopulation, gc, transform);
+
+        Affine worldTransform = transform.clone();
+        worldTransform.append(camera);
+        type.render(currentPopulation, gc, worldTransform);
     }
 
     public double getPopulation() {

@@ -2,6 +2,7 @@ package com.beariksonstudios.existence.scenes.game;
 
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Shape;
 
@@ -28,7 +29,9 @@ public class CanvasMouseEventHandler implements EventHandler<MouseEvent> {
         }
 
         if (!hit) {
-            game.promptName(event.getX(), event.getY());
+            // Convert coordinates to world for placement in scene
+            Point2D point = game.getCameraTransform().inverseTransform(event.getX(), event.getY());
+            game.promptName(point.getX(), point.getY());
 
         }
     }
