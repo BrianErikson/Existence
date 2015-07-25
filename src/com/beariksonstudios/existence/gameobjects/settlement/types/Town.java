@@ -8,6 +8,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Affine;
 
+import java.util.Arrays;
+
 
 /**
  * Created by Neal on 7/13/2015.
@@ -33,10 +35,9 @@ public class Town implements SettlementType {
         Affine localTransform = transform.clone();
         triangle.setCenter(new Point2D(localTransform.getTx(), localTransform.getTy()));
 
-        gc.setTransform(localTransform);
         gc.setFill(Color.BLACK);
+        System.out.println(Arrays.toString(triangle.getXPoints()) + " " + Arrays.toString(triangle.getYPoints()));
         gc.fillPolygon(triangle.getXPoints(), triangle.getYPoints(), triangle.getPoints().size() / 2);
-        gc.setTransform(new Affine());
     }
 
     @Override
