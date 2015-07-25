@@ -47,13 +47,9 @@ public abstract class Polygon extends javafx.scene.shape.Polygon {
     }
 
     public void updatePoints() {
-
-        System.out.println(transform.toString());
         ArrayList<Double> newPoints = new ArrayList<>();
         for (int i = 0; i < model.size(); i += 2) {
-            Point2D point = new Point2D(model.get(i), model.get(i+1));
-            Point2D worldPoint = transform.transform(point);
-            System.out.println(worldPoint);
+            Point2D worldPoint = transform.transform(model.get(i), model.get(i+1));
             newPoints.add(worldPoint.getX());
             newPoints.add(worldPoint.getY());
         }
@@ -69,11 +65,7 @@ public abstract class Polygon extends javafx.scene.shape.Polygon {
         double[] arr = new double[getPoints().size() / 2]; // arr = 3 index places
         ObservableList<Double> points = getPoints(); // 6 index places
         for (int i = 0; i < points.size(); i += 2) {
-            int index = i;
-            if (i > 1)
-                index /= 2;
-
-            arr[index] = points.get(i);
+            arr[i/2] = points.get(i);
         }
 
         return arr;
@@ -88,11 +80,7 @@ public abstract class Polygon extends javafx.scene.shape.Polygon {
         double[] arr = new double[getPoints().size() / 2];
         ObservableList<Double> points = getPoints();
         for (int i = 1; i < points.size(); i += 2) {
-            int index = i;
-            if (i > 1)
-                index /= 2;
-
-            arr[index] = points.get(i);
+            arr[i/2] = points.get(i);
         }
 
         return arr;
