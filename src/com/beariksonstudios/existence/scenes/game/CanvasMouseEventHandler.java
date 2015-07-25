@@ -28,9 +28,8 @@ public class CanvasMouseEventHandler implements EventHandler<MouseEvent> {
         }
 
         if (!hit) {
-            Settlement settlement = new Settlement(game, 9000, event.getX(), event.getY());
-            game.addSettlement(settlement);
-            game.setTarget(settlement);
+            game.promptName(event.getX(), event.getY());
+
         }
     }
 }

@@ -26,13 +26,8 @@ public class Town implements SettlementType {
 
     @Override
     public void render(double population, GraphicsContext gc, Affine transform) {
-        double triangleScale = population * 0.01d;
-
-        triangle.setScale(triangleScale);
-
-        Affine localTransform = transform.clone();
-        triangle.setCenter(new Point2D(localTransform.getTx(), localTransform.getTy()));
-
+        triangle.setScale(population * 0.01d);
+        triangle.setCenter(new Point2D(transform.getTx(), transform.getTy()));
         gc.setFill(Color.BLACK);
         gc.fillPolygon(triangle.getXPoints(), triangle.getYPoints(), triangle.getPoints().size() / 2);
     }

@@ -97,14 +97,14 @@ public abstract class Polygon extends javafx.scene.shape.Polygon {
      *
      * @return
      */
-    abstract Point2D getCentroid();
+    public abstract Point2D getCentroid();
 
     /**
      * Sets the center of the polygon to the specified point in world space
      *
      * @param centerPos
      */
-    abstract void setCenter(Point2D centerPos);
+    public abstract void setCenter(Point2D centerPos);
 
     public void translate(double x, double y) {
         translate.setX(translate.getX() + x);

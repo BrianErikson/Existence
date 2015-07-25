@@ -1,5 +1,4 @@
-Player can name each settlement
-implements shapes for other settlement type, when clicked
+
 Take away population from settlement when new one is create
 Make scrolling/paning possible
 Fix scaling rates of types

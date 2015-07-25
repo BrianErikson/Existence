@@ -3,18 +3,26 @@ package com.beariksonstudios.existence.scenes.game;
 import com.beariksonstudios.existence.Existence;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogEvent;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,12 +35,14 @@ public class Game extends Scene {
     public static double SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
 
     private Canvas canvas;
+    private String userName;
 
     private Label popLabel;
     private Label resourceLabel;
     private Label yearLabel;
     private Label typeLabel;
     private Label globalPopLabel;
+    private Label settlementName;
 
     private double startTime = System.currentTimeMillis();
     private double secsSinceStart;
@@ -84,8 +94,9 @@ public class Game extends Scene {
         typeLabel = new Label("Settlement Type: " + "Your people wander and suffer aimlessly");
         yearLabel = new Label("Current Year: " + initialYear);
         globalPopLabel = new Label("Global Population: " + "There are no homes for our women to give birth");
+        settlementName = new Label("Settlement Name: ");
 
-        labelVBox.getChildren().addAll(globalPopLabel, typeLabel, popLabel, resourceLabel, yearLabel);
+        labelVBox.getChildren().addAll(globalPopLabel, settlementName, typeLabel, popLabel, resourceLabel, yearLabel);
 
         return labelVBox;
     }
@@ -125,6 +136,7 @@ public class Game extends Scene {
             popLabel.setText("Population: " + Math.floor(target.getPopulation()));
             typeLabel.setText("Settlement Type: " + target.getType());
             resourceLabel.setText("Resources: " + target.getResources());
+            settlementName.setText("Settlement Name: " + target.getName());
         }
     }
 
@@ -150,5 +162,22 @@ public class Game extends Scene {
 
     public void setTarget(Settlement target) {
         this.target = target;
+    }
+
+    public void createNewSettlement(String name, double x, double y){
+        Settlement settlement = new Settlement(this, 9000,x , y, name);
+        settlements.add(settlement);
+        setTarget(settlement);
+    }
+    public void promptName(double x, double y){
+        TextInputDialog nameDialog = new TextInputDialog("Settlement " + settlements.size());
+        nameDialog.setTitle("Set Settlement Name");
+        nameDialog.setHeaderText("Name your newest City!!");
+        nameDialog.setContentText("Please enter your the name for this settlement:");
+        Optional<String> result = nameDialog.showAndWait();
+        if (result.isPresent()) {
+            if(!result.get().isEmpty())
+                createNewSettlement(result.get(), x, y);
+        }
     }
 }

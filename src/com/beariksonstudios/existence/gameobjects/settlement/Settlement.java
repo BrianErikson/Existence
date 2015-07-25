@@ -34,9 +34,12 @@ public class Settlement {
     private Rotate rotate;
     private Translate translate;
 
+    private String name;
 
-    public Settlement(Game game, double initialPopulation, double x, double y) {
+
+    public Settlement(Game game, double initialPopulation, double x, double y, String name) {
         this.game = game;
+        this.name = name;
         this.initialPopulation = initialPopulation;
 
         currentPopulation = initialPopulation;
@@ -125,5 +128,9 @@ public class Settlement {
 
     public Shape getShape() {
         return type.getShape();
+    }
+
+    public String getName() {
+        return name;
     }
 }
