@@ -24,7 +24,9 @@ public class Triangle extends Polygon {
     @Override
     public void setCenter(Point2D centerPos) {
         Point2D centroid = getCentroid();
-        setTranslateX(centerPos.getX() - centroid.getX());
-        setTranslateY(centerPos.getY() - centroid.getY());
+        //setTranslation(centerPos.getX() - centroid.getX(),
+          //              centerPos.getY() - centroid.getY());
+        setTranslation(centerPos.getX(), centerPos.getY());
+        update();
     }
 }

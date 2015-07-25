@@ -33,10 +33,8 @@ public class Town implements SettlementType {
         Affine localTransform = transform.clone();
         triangle.setCenter(new Point2D(localTransform.getTx(), localTransform.getTy()));
 
-        gc.setTransform(localTransform);
         gc.setFill(Color.BLACK);
         gc.fillPolygon(triangle.getXPoints(), triangle.getYPoints(), triangle.getPoints().size() / 2);
-        gc.setTransform(new Affine());
     }
 
     @Override
