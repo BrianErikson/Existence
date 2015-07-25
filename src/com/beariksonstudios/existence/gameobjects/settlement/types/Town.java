@@ -1,14 +1,12 @@
 package com.beariksonstudios.existence.gameobjects.settlement.types;
 
-import com.beariksonstudios.existence.primitives.Triangle;
 import com.beariksonstudios.existence.gameobjects.settlement.SettlementType;
+import com.beariksonstudios.existence.primitives.Triangle;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Affine;
-
-import java.util.Arrays;
 
 
 /**
@@ -36,7 +34,6 @@ public class Town implements SettlementType {
         triangle.setCenter(new Point2D(localTransform.getTx(), localTransform.getTy()));
 
         gc.setFill(Color.BLACK);
-        System.out.println(Arrays.toString(triangle.getXPoints()) + " " + Arrays.toString(triangle.getYPoints()));
         gc.fillPolygon(triangle.getXPoints(), triangle.getYPoints(), triangle.getPoints().size() / 2);
     }
 
