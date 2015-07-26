@@ -1,7 +1,24 @@
 
-Take away population from settlement when new one is create
-Make scrolling/paning possible
 Fix scaling rates of types
 Make map with resources
 Make trade routes
 resources effect growth rate
+procedurally generate water resources
+
+Specific Resources:
+    Water
+    Wood
+    Stone
+    Grain
+    Fish
+    Fruit
+
+General Resources:
+    Fertile land
+    Rivers
+    Lakes
+    Mountains - Stone, metals
+    Forest - wood
+
+
+

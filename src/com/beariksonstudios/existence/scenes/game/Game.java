@@ -2,10 +2,13 @@ package com.beariksonstudios.existence.scenes.game;
 
 import com.beariksonstudios.existence.Existence;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
+import com.beariksonstudios.existence.resources.map.FertileLand;
+import com.beariksonstudios.existence.resources.map.MapResource;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.*;
@@ -16,10 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Created by Neal on 7/3/2015.
@@ -53,6 +53,8 @@ public class Game extends Scene {
     private Translate cameraTranslation;
     public static int MOVE_SPEED = 10;
 
+    private ArrayList<MapResource> mapResources = new ArrayList<MapResource>();
+
     public Game(StackPane root) {
         super(root);
         Stage stage = Existence.fetch().getStage();
@@ -77,6 +79,8 @@ public class Game extends Scene {
         root.getChildren().add(getNewUiInstance());
 
         cameraTranslation = new Translate(0,0);
+
+        mapResources.add(new FertileLand(1000));
 
         startRenderTimer();
     }
@@ -123,6 +127,10 @@ public class Game extends Scene {
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+        for(MapResource mapResource: mapResources){
+            mapResource.render(gc, cameraTranslation);
+        }
+
         globalPopulation = 0d;
         for (Settlement settlement : settlements) {
             settlement.render(gc, cameraTranslation);
@@ -168,10 +176,11 @@ public class Game extends Scene {
         this.target = target;
     }
 
-    public void createNewSettlement(String name, double x, double y){
+    public Settlement createNewSettlement(String name, double x, double y){
         Settlement settlement = new Settlement(this, 9000,x , y, name);
         settlements.add(settlement);
         setTarget(settlement);
+        return settlement;
     }
     public void promptName(double x, double y){
         TextInputDialog nameDialog = new TextInputDialog("Settlement " + settlements.size());
@@ -181,7 +190,33 @@ public class Game extends Scene {
         Optional<String> result = nameDialog.showAndWait();
         if (result.isPresent()) {
             if(!result.get().isEmpty())
-                createNewSettlement(result.get(), x, y);
+                if(settlements.size() == 0) {
+                    createNewSettlement(result.get(), x, y);
+                }
+                else {
+                    promptPopulationChoice(result.get(), x, y);
+                }
+        }
+    }
+    public void promptPopulationChoice(String name, double x, double y){
+        ArrayList<String> names = new ArrayList<>();
+        for(int i = 0; i < settlements.size(); i++){
+            names.add(settlements.get(i).getName());
+        }
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(names.get(0), names);
+        dialog.setTitle("Choose a City");
+        dialog.setHeaderText("Which city would you like to steal 1000 population from?");
+        dialog.setContentText("Choose the city here: ");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            createNewSettlement(name, x, y);
+            for (Settlement settlement : settlements) {
+                if(settlement.getName().equals(result.get())){
+                    settlement.addPopulation(-10000);
+                    break;
+                }
+            }
+
         }
     }
 

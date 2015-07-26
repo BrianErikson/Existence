@@ -69,9 +69,9 @@ public class Settlement {
 
         gc.setFill(Color.GAINSBORO);
 
-        Affine worldTransform = transform.clone();
-        worldTransform.append(camera);
-        type.render(currentPopulation, gc, worldTransform);
+        Affine settlementTransform = transform.clone();
+        settlementTransform.append(camera);
+        type.render(currentPopulation, gc, settlementTransform);
     }
 
     public double getPopulation() {
@@ -87,19 +87,26 @@ public class Settlement {
     }
 
     public void checkSettlementType() {
-        if (this.getPopulation() > 20000) {
+        if (this.getPopulation() >= 20000) {
             if (!(type instanceof Metropolis)) {
                 type = new Metropolis();
+                this.setGrowthRate(type.getGrowthRate());
             }
-        } else if (this.getPopulation() > 15000) {
+        } else if (this.getPopulation() >= 15000) {
             if (!(type instanceof City)) {
                 type = new City();
                 this.setGrowthRate(type.getGrowthRate());
             }
-        } else if (this.getPopulation() > 10000) {
+        } else if (this.getPopulation() >= 10000) {
             if (!(type instanceof Town)) {
                 type = new Town();
                 this.setGrowthRate(type.getGrowthRate());
+            }
+        }
+        else{
+            if(!(type instanceof Village)){
+                type = new Village();
+                this.setGrowthRate((type.getGrowthRate()));
             }
         }
     }
@@ -132,5 +139,10 @@ public class Settlement {
 
     public String getName() {
         return name;
+    }
+
+    public void addPopulation(int population) {
+        currentPopulation += population;
+        setGrowthRate(getCurrentGrowthRate());
     }
 }
