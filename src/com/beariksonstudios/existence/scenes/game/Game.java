@@ -2,8 +2,7 @@ package com.beariksonstudios.existence.scenes.game;
 
 import com.beariksonstudios.existence.Existence;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
-import com.beariksonstudios.existence.resources.map.FertileLand;
-import com.beariksonstudios.existence.resources.map.MapResource;
+import com.beariksonstudios.existence.resources.map.*;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -28,6 +27,7 @@ public class Game extends Scene {
     public static long MS_PER_SEC = 1000;
     public static long FPS = 30;
     public static double SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
+    public static double MAP_SIZE = 3000;
 
     private Canvas canvas;
     private String userName;
@@ -52,7 +52,7 @@ public class Game extends Scene {
 
     private Translate cameraTranslation;
     public static int MOVE_SPEED = 10;
-
+    private final Random RANDOM = new Random(System.currentTimeMillis());
     private ArrayList<MapResource> mapResources = new ArrayList<MapResource>();
 
     public Game(StackPane root) {
@@ -78,9 +78,17 @@ public class Game extends Scene {
         root.getChildren().add(canvas);
         root.getChildren().add(getNewUiInstance());
 
-        cameraTranslation = new Translate(0,0);
+        cameraTranslation = new Translate(MAP_SIZE/2d,MAP_SIZE/2d);
 
-        mapResources.add(new FertileLand(1000));
+        for(int i = 0; i < 6; i++) {
+            double x = RANDOM.nextDouble()  * MAP_SIZE;
+            double y = RANDOM.nextDouble()  * MAP_SIZE;
+            System.out.println("X: " + x + " Y: " + y);
+            mapResources.add(new FertileLand(1000,x, y));
+            mapResources.add(new Mountain(1000, RANDOM.nextDouble() * MAP_SIZE, RANDOM.nextDouble() * MAP_SIZE));
+            mapResources.add(new Forest(1000,RANDOM.nextDouble() * MAP_SIZE, RANDOM.nextDouble() * MAP_SIZE));
+            mapResources.add(new Lake(1000,RANDOM.nextDouble() * MAP_SIZE, RANDOM.nextDouble() * MAP_SIZE));
+        }
 
         startRenderTimer();
     }
@@ -137,6 +145,7 @@ public class Game extends Scene {
             globalPopulation += settlement.getPopulation();
         }
 
+        System.out.println(cameraTranslation.toString());
         updateUI();
     }
 
@@ -150,6 +159,19 @@ public class Game extends Scene {
             resourceLabel.setText("Resources: " + target.getResources());
             settlementName.setText("Settlement Name: " + target.getName());
         }
+        if(cameraTranslation.getX() < 0){
+            cameraTranslation.setX(0);
+        }
+        else if(cameraTranslation.getX() > MAP_SIZE){
+            cameraTranslation.setX(MAP_SIZE);
+        }
+        if(cameraTranslation.getY() < 0){
+            cameraTranslation.setY(0);
+        }
+        else if(cameraTranslation.getY() > MAP_SIZE){
+            cameraTranslation.setY(MAP_SIZE);
+        }
+
     }
 
     public double getYearsFromStart() {

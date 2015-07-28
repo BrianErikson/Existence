@@ -21,6 +21,13 @@ public abstract class MapResource {
         this.quantity = quantity;
         translate = new Translate();
     }
+
+    public MapResource(Image texture, int quantity, double x, double y){
+        this.texture = texture;
+        this.quantity = quantity;
+        translate = new Translate(x, y);
+    }
+
     public Image getTexture() {
         return texture;
     }
@@ -47,7 +54,12 @@ public abstract class MapResource {
 
 
     public void render(GraphicsContext gc, Transform camera) {
+
             Point2D position = camera.transform(translate.getX(), translate.getY());
             gc.drawImage(texture, position.getX(), position.getY());
+    }
+    public void setPosition(double x, double y){
+        translate.setX(x);
+        translate.setY(y);
     }
 }
