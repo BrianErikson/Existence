@@ -3,19 +3,21 @@ package com.beariksonstudios.existence.scenes.game;
 import com.beariksonstudios.existence.Existence;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import com.beariksonstudios.existence.resources.map.*;
+import com.beariksonstudios.existence.scenes.Transform;
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -49,8 +51,8 @@ public class Game extends Scene {
     private double globalPopulation;
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
     private Settlement target;
+    private Transform camera;
 
-    private Translate cameraTranslation;
     public static int MOVE_SPEED = 10;
     private final Random RANDOM = new Random(System.currentTimeMillis());
     private ArrayList<MapResource> mapResources = new ArrayList<MapResource>();
@@ -78,7 +80,9 @@ public class Game extends Scene {
         root.getChildren().add(canvas);
         root.getChildren().add(getNewUiInstance());
 
-        cameraTranslation = new Translate(MAP_SIZE/2d,MAP_SIZE/2d);
+        camera = new Transform();
+        camera.setPosition(new Point2D(MAP_SIZE/2d,MAP_SIZE/2d));
+        camera.setRotation(180);
 
         for(int i = 0; i < 6; i++) {
             double x = RANDOM.nextDouble()  * MAP_SIZE;
@@ -136,16 +140,16 @@ public class Game extends Scene {
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         for(MapResource mapResource: mapResources){
-            mapResource.render(gc, cameraTranslation);
+            mapResource.render(gc, camera);
         }
 
         globalPopulation = 0d;
         for (Settlement settlement : settlements) {
-            settlement.render(gc, cameraTranslation);
+            settlement.render(gc, camera);
             globalPopulation += settlement.getPopulation();
         }
 
-        System.out.println(cameraTranslation.toString());
+        camera.update();
         updateUI();
     }
 
@@ -159,17 +163,19 @@ public class Game extends Scene {
             resourceLabel.setText("Resources: " + target.getResources());
             settlementName.setText("Settlement Name: " + target.getName());
         }
-        if(cameraTranslation.getX() < 0){
-            cameraTranslation.setX(0);
+
+        if(camera.getX() < 0){
+            System.out.println(camera.getX());
+            camera.setPosition(new Point2D(0d, camera.getY()));
         }
-        else if(cameraTranslation.getX() > MAP_SIZE){
-            cameraTranslation.setX(MAP_SIZE);
+        else if(camera.getX() > MAP_SIZE){
+            camera.setPosition(new Point2D(MAP_SIZE, camera.getY()));
         }
-        if(cameraTranslation.getY() < 0){
-            cameraTranslation.setY(0);
+        if(camera.getY() < 0){
+            camera.setPosition(new Point2D(camera.getX(), 0d));
         }
-        else if(cameraTranslation.getY() > MAP_SIZE){
-            cameraTranslation.setY(MAP_SIZE);
+        else if(camera.getY() > MAP_SIZE){
+            camera.setPosition(new Point2D(camera.getX(), MAP_SIZE));
         }
 
     }
@@ -242,7 +248,7 @@ public class Game extends Scene {
         }
     }
 
-    public Translate getCameraTransform() {
-        return cameraTranslation;
+    public Transform getCameraTransform() {
+        return camera;
     }
 }

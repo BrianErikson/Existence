@@ -1,10 +1,9 @@
 package com.beariksonstudios.existence.resources.map;
 
+import com.beariksonstudios.existence.scenes.Transform;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 
 /**
@@ -55,7 +54,7 @@ public abstract class MapResource {
 
     public void render(GraphicsContext gc, Transform camera) {
 
-            Point2D position = camera.transform(translate.getX(), translate.getY());
+            Point2D position = camera.project(translate.getX(), translate.getY());
             gc.drawImage(texture, position.getX(), position.getY());
     }
     public void setPosition(double x, double y){

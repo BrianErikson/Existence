@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Shape;
+import javafx.scene.transform.NonInvertibleTransformException;
 
 /**
  * Created by BrianErikson on 7/21/2015.
@@ -30,9 +31,12 @@ public class CanvasMouseEventHandler implements EventHandler<MouseEvent> {
 
         if (!hit) {
             // Convert coordinates to world for placement in scene
-            Point2D point = game.getCameraTransform().inverseTransform(event.getX(), event.getY());
-            game.promptName(point.getX(), point.getY());
-
+            try {
+                Point2D point = game.getCameraTransform().deproject(new Point2D(event.getX(), event.getY()));
+                game.promptName(point.getX(), point.getY());
+            } catch (NonInvertibleTransformException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
