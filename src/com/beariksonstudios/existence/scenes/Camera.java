@@ -1,19 +1,20 @@
 package com.beariksonstudios.existence.scenes;
 
+import com.beariksonstudios.existence.scenes.game.Game;
 import javafx.geometry.Point2D;
 import javafx.scene.transform.*;
 
 /**
  * Created by BrianErikson on 7/31/2015.
  */
-public class Transform {
+public class Camera {
     private Scale scale;
     private Rotate rotate;
     private Translate translation;
     private Affine affine;
     private boolean isDirty = false;
 
-    public Transform() {
+    public Camera() {
         scale = new Scale();
         rotate = new Rotate();
         translation = new Translate();
@@ -22,7 +23,24 @@ public class Transform {
     }
 
     public void update() {
+        checkBounds();
         updateTransform();
+    }
+
+    private void checkBounds() {
+        if(getX() < 0){
+            System.out.println(getX());
+            setPosition(new Point2D(0d, getY()));
+        }
+        else if(getX() > Game.MAP_SIZE){
+            setPosition(new Point2D(Game.MAP_SIZE, getY()));
+        }
+        if(getY() < 0){
+            setPosition(new Point2D(getX(), 0d));
+        }
+        else if(getY() > Game.MAP_SIZE){
+            setPosition(new Point2D(getX(), Game.MAP_SIZE));
+        }
     }
 
     private void updateTransform() {
@@ -31,8 +49,7 @@ public class Transform {
             affine.append(scale);
             affine.append(rotate);
             affine.append(translation);
-            System.out.println("Translation mat: " + translation.toString());
-            System.out.println("Affine pos: " + getPosition().toString());
+            System.out.println("Camera Pos: " + getPosition().toString());
             isDirty = false;
         }
     }
@@ -50,8 +67,8 @@ public class Transform {
     }
 
     public void setPosition(Point2D point) {
-        translation.setX(-point.getX()); // TODO SUPER HACKY
-        translation.setY(-point.getY()); // TODO SUPER HACKY
+        translation.setX(-point.getX());
+        translation.setY(-point.getY());
         isDirty = true;
     }
 

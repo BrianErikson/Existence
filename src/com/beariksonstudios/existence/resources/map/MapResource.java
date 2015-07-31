@@ -1,6 +1,6 @@
 package com.beariksonstudios.existence.resources.map;
 
-import com.beariksonstudios.existence.scenes.Transform;
+import com.beariksonstudios.existence.scenes.Camera;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -52,7 +52,7 @@ public abstract class MapResource {
     }
 
 
-    public void render(GraphicsContext gc, Transform camera) {
+    public void render(GraphicsContext gc, Camera camera) {
 
             Point2D position = camera.project(translate.getX(), translate.getY());
             gc.drawImage(texture, position.getX(), position.getY());

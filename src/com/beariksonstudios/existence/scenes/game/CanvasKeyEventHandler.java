@@ -1,6 +1,6 @@
 package com.beariksonstudios.existence.scenes.game;
 
-import com.beariksonstudios.existence.scenes.Transform;
+import com.beariksonstudios.existence.scenes.Camera;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
@@ -15,7 +15,7 @@ public class CanvasKeyEventHandler implements EventHandler<KeyEvent> {
 
     @Override
     public void handle(KeyEvent event) {
-        Transform cameraTranslation = game.getCameraTransform();
+        Camera cameraTranslation = game.getCameraTransform();
         
         switch (event.getCode()) {
             case W:

@@ -3,7 +3,7 @@ package com.beariksonstudios.existence.scenes.game;
 import com.beariksonstudios.existence.Existence;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import com.beariksonstudios.existence.resources.map.*;
-import com.beariksonstudios.existence.scenes.Transform;
+import com.beariksonstudios.existence.scenes.Camera;
 import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
@@ -51,7 +51,7 @@ public class Game extends Scene {
     private double globalPopulation;
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
     private Settlement target;
-    private Transform camera;
+    private Camera camera;
 
     public static int MOVE_SPEED = 10;
     private final Random RANDOM = new Random(System.currentTimeMillis());
@@ -80,8 +80,8 @@ public class Game extends Scene {
         root.getChildren().add(canvas);
         root.getChildren().add(getNewUiInstance());
 
-        camera = new Transform();
-        camera.setPosition(new Point2D(MAP_SIZE/2d,MAP_SIZE/2d));
+        camera = new Camera();
+        camera.setPosition(new Point2D(MAP_SIZE / 2d, MAP_SIZE / 2d));
         camera.setRotation(180);
 
         for(int i = 0; i < 6; i++) {
@@ -164,20 +164,6 @@ public class Game extends Scene {
             settlementName.setText("Settlement Name: " + target.getName());
         }
 
-        if(camera.getX() < 0){
-            System.out.println(camera.getX());
-            camera.setPosition(new Point2D(0d, camera.getY()));
-        }
-        else if(camera.getX() > MAP_SIZE){
-            camera.setPosition(new Point2D(MAP_SIZE, camera.getY()));
-        }
-        if(camera.getY() < 0){
-            camera.setPosition(new Point2D(camera.getX(), 0d));
-        }
-        else if(camera.getY() > MAP_SIZE){
-            camera.setPosition(new Point2D(camera.getX(), MAP_SIZE));
-        }
-
     }
 
     public double getYearsFromStart() {
@@ -248,7 +234,7 @@ public class Game extends Scene {
         }
     }
 
-    public Transform getCameraTransform() {
+    public Camera getCameraTransform() {
         return camera;
     }
 }
