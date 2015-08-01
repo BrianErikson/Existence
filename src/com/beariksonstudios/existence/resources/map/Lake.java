@@ -7,12 +7,13 @@ import javafx.scene.image.Image;
  */
 public class Lake extends MapResource {
     public static String TEX_PATH = "MapResources/Lake.png";
+    public static String NAME = "Lake";
 
     public Lake(int quantity) {
-        super(new Image(TEX_PATH), quantity);
+        super(NAME, new Image(TEX_PATH), quantity);
     }
 
     public Lake(int quantity, double x, double y) {
-        super(new Image(TEX_PATH), quantity, x, y);
+        super(NAME, new Image(TEX_PATH), quantity, x, y);
     }
 }

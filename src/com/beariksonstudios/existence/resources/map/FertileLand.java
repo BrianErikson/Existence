@@ -7,11 +7,13 @@ import javafx.scene.image.Image;
  */
 public class FertileLand extends MapResource {
     public static String TEX_PATH = "MapResources/FertileLand.png";
+    public static String NAME = "Fertile Land";
 
     public FertileLand(int quantity) {
-        super(new Image(TEX_PATH), quantity);
+        super(NAME, new Image(TEX_PATH), quantity);
     }
-    public FertileLand(int quantity, double x , double y){
-        super(new Image(TEX_PATH), quantity, x, y);
+
+    public FertileLand(int quantity, double x, double y) {
+        super(NAME, new Image(TEX_PATH), quantity, x, y);
     }
 }

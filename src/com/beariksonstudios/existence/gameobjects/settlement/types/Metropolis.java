@@ -14,6 +14,7 @@ import javafx.scene.transform.Affine;
  */
 public class Metropolis implements SettlementType {
     Star star;
+
     public Metropolis() {
         star = new Star();
     }
@@ -28,7 +29,7 @@ public class Metropolis implements SettlementType {
         star.setScale(population * 0.001d);
         star.setCenter(new Point2D(transform.getTx(), transform.getTy()));
         gc.setFill(Color.BLUE);
-        gc.fillPolygon(star.getXPoints(), star.getYPoints(), star.getPoints().size()/ 2);
+        gc.fillPolygon(star.getXPoints(), star.getYPoints(), star.getPoints().size() / 2);
 
     }
 

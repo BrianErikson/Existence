@@ -11,12 +11,14 @@ import javafx.scene.input.KeyEvent;
 public class CanvasKeyEventHandler implements EventHandler<KeyEvent> {
     final Game game;
 
-    public CanvasKeyEventHandler(Game game) {this.game = game;}
+    public CanvasKeyEventHandler(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void handle(KeyEvent event) {
         Camera cameraTranslation = game.getCameraTransform();
-        
+
         switch (event.getCode()) {
             case W:
                 cameraTranslation.translate(new Point2D(0d, -Game.MOVE_SPEED));

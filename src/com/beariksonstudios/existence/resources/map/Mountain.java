@@ -7,11 +7,13 @@ import javafx.scene.image.Image;
  */
 public class Mountain extends MapResource {
     public static String TEX_PATH = "MapResources/Mountain.png";
+    public static String NAME = "Mountain";
 
     public Mountain(int quantity) {
-        super(new Image(TEX_PATH), quantity);
+        super(NAME, new Image(TEX_PATH), quantity);
     }
-    public Mountain(int quantity, double x , double y){
-        super(new Image(TEX_PATH), quantity, x, y);
+
+    public Mountain(int quantity, double x, double y) {
+        super(NAME, new Image(TEX_PATH), quantity, x, y);
     }
 }

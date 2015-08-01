@@ -5,10 +5,11 @@ import javafx.geometry.Point2D;
 /**
  * Created by Neal on 7/25/2015.
  */
-public class Diamond extends  Polygon {
-    public Diamond(){
-        super(0,-1,-1,0,0,1,1,0);
+public class Diamond extends Polygon {
+    public Diamond() {
+        super(0, -1, -1, 0, 0, 1, 1, 0);
     }
+
     @Override
     public Point2D getCentroid() {
         double[] xPoints = getXPoints();

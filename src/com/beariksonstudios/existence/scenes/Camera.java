@@ -28,17 +28,14 @@ public class Camera {
     }
 
     private void checkBounds() {
-        if(getX() < 0){
-            System.out.println(getX());
+        if (getX() < 0) {
             setPosition(new Point2D(0d, getY()));
-        }
-        else if(getX() > Game.MAP_SIZE){
+        } else if (getX() > Game.MAP_SIZE) {
             setPosition(new Point2D(Game.MAP_SIZE, getY()));
         }
-        if(getY() < 0){
+        if (getY() < 0) {
             setPosition(new Point2D(getX(), 0d));
-        }
-        else if(getY() > Game.MAP_SIZE){
+        } else if (getY() > Game.MAP_SIZE) {
             setPosition(new Point2D(getX(), Game.MAP_SIZE));
         }
     }
@@ -67,8 +64,8 @@ public class Camera {
     }
 
     public void setPosition(Point2D point) {
-        translation.setX(-point.getX());
-        translation.setY(-point.getY());
+        translation.setX(point.getX());
+        translation.setY(point.getY());
         isDirty = true;
     }
 

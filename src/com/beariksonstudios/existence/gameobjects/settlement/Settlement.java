@@ -5,8 +5,10 @@ import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Village;
 import com.beariksonstudios.existence.scenes.Camera;
+import com.beariksonstudios.existence.scenes.game.ClickableObject;
 import com.beariksonstudios.existence.scenes.game.Game;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Affine;
@@ -14,10 +16,12 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
+import java.util.ArrayList;
+
 /**
  * Created by Neal on 7/6/2015.
  */
-public class Settlement {
+public class Settlement implements ClickableObject {
     private Game game;
     private double initialPopulation;
     private double currentPopulation;
@@ -37,6 +41,15 @@ public class Settlement {
 
     private String name;
 
+    private Label popLabel;
+    private Label resourceLabel;
+    private Label yearLabel;
+    private Label typeLabel;
+    private Label settlementName;
+    private ArrayList<Label> labels = new ArrayList<>();
+
+    private boolean isTarget = false;
+
 
     public Settlement(Game game, double initialPopulation, double x, double y, String name) {
         this.game = game;
@@ -55,6 +68,15 @@ public class Settlement {
         translate = new Translate();
         translate.setX(x);
         translate.setY(y);
+
+        popLabel = new Label("Population: " + "No current Settlements in this Kingdom me Lord");
+        resourceLabel = new Label("Resource: " + "Me Lord! We have no resources!");
+        typeLabel = new Label("Settlement Type: " + "Your people wander and suffer aimlessly");
+        settlementName = new Label("Settlement Name: " + getName());
+        labels.add(popLabel);
+        labels.add(resourceLabel);
+        labels.add(typeLabel);
+        labels.add(settlementName);
 
         this.updateTransform();
     }
@@ -76,6 +98,15 @@ public class Settlement {
         Affine settlementTransform = transform.clone();
         settlementTransform.append(camera.get());
         type.render(currentPopulation, gc, settlementTransform);
+        updateUI();
+    }
+
+    public void updateUI() {
+        if (isTarget) {
+            popLabel.setText("Population: " + Math.floor(getPopulation()));
+            typeLabel.setText("Settlement Type: " + getType());
+            resourceLabel.setText("Resources: " + getResources());
+        }
     }
 
     public double getPopulation() {
@@ -106,9 +137,8 @@ public class Settlement {
                 type = new Town();
                 this.setGrowthRate(type.getGrowthRate());
             }
-        }
-        else{
-            if(!(type instanceof Village)){
+        } else {
+            if (!(type instanceof Village)) {
                 type = new Village();
                 this.setGrowthRate((type.getGrowthRate()));
             }
@@ -137,16 +167,32 @@ public class Settlement {
         return initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
     }
 
-    public Shape getShape() {
-        return type.getShape();
+    public void addPopulation(int population) {
+        currentPopulation += population;
+        setGrowthRate(getCurrentGrowthRate());
     }
 
+    @Override
+    public ArrayList<Label> getLabels() {
+        return labels;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
-    public void addPopulation(int population) {
-        currentPopulation += population;
-        setGrowthRate(getCurrentGrowthRate());
+    @Override
+    public Shape getShape() {
+        return type.getShape();
+    }
+
+    @Override
+    public void setAsTarget() {
+        isTarget = true;
+    }
+    @Override
+    public void untarget() {
+        isTarget = false;
     }
 }

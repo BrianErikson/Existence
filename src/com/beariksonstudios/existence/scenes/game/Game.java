@@ -30,32 +30,23 @@ public class Game extends Scene {
     public static long FPS = 30;
     public static double SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
     public static double MAP_SIZE = 3000;
-
+    public static int MOVE_SPEED = 10;
+    private final Random RANDOM = new Random(System.currentTimeMillis());
     private Canvas canvas;
     private String userName;
-
-    private Label popLabel;
-    private Label resourceLabel;
-    private Label yearLabel;
-    private Label typeLabel;
     private Label globalPopLabel;
-    private Label settlementName;
-
+    private Label yearLabel;
     private double startTime = System.currentTimeMillis();
     private double secsSinceStart;
-
     private double currentYear;
     private double initialYear;
     private double yearsFromStart;
-
     private double globalPopulation;
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
-    private Settlement target;
+    private ClickableObject target;
     private Camera camera;
-
-    public static int MOVE_SPEED = 10;
-    private final Random RANDOM = new Random(System.currentTimeMillis());
     private ArrayList<MapResource> mapResources = new ArrayList<MapResource>();
+    private VBox labelVBox;
 
     public Game(StackPane root) {
         super(root);
@@ -82,16 +73,15 @@ public class Game extends Scene {
 
         camera = new Camera();
         camera.setPosition(new Point2D(MAP_SIZE / 2d, MAP_SIZE / 2d));
-        camera.setRotation(180);
 
-        for(int i = 0; i < 6; i++) {
-            double x = RANDOM.nextDouble()  * MAP_SIZE;
-            double y = RANDOM.nextDouble()  * MAP_SIZE;
+        for (int i = 0; i < 20; i++) {
+            double x = RANDOM.nextDouble() * -MAP_SIZE;
+            double y = RANDOM.nextDouble() * -MAP_SIZE;
             System.out.println("X: " + x + " Y: " + y);
-            mapResources.add(new FertileLand(1000,x, y));
-            mapResources.add(new Mountain(1000, RANDOM.nextDouble() * MAP_SIZE, RANDOM.nextDouble() * MAP_SIZE));
-            mapResources.add(new Forest(1000,RANDOM.nextDouble() * MAP_SIZE, RANDOM.nextDouble() * MAP_SIZE));
-            mapResources.add(new Lake(1000,RANDOM.nextDouble() * MAP_SIZE, RANDOM.nextDouble() * MAP_SIZE));
+            mapResources.add(new FertileLand(1000, x, y));
+            mapResources.add(new Mountain(1000, RANDOM.nextDouble() * -MAP_SIZE, RANDOM.nextDouble() * -MAP_SIZE));
+            mapResources.add(new Forest(1000, RANDOM.nextDouble() * -MAP_SIZE, RANDOM.nextDouble() * -MAP_SIZE));
+            mapResources.add(new Lake(1000, RANDOM.nextDouble() * -MAP_SIZE, RANDOM.nextDouble() * -MAP_SIZE));
         }
 
         startRenderTimer();
@@ -106,17 +96,13 @@ public class Game extends Scene {
     }
 
     private VBox getNewBottomPane() {
-        VBox labelVBox = new VBox();
+        labelVBox = new VBox();
         labelVBox.setStyle("-fx-background-color: gainsboro;");
 
-        popLabel = new Label("Population: " + "No current Settlements in this Kingdom me Lord");
-        resourceLabel = new Label("Resource: " + "Me Lord! We have no resources!");
-        typeLabel = new Label("Settlement Type: " + "Your people wander and suffer aimlessly");
-        yearLabel = new Label("Current Year: " + initialYear);
         globalPopLabel = new Label("Global Population: " + "There are no homes for our women to give birth");
-        settlementName = new Label("Settlement Name: ");
+        yearLabel = new Label("Current Year: " + initialYear);
 
-        labelVBox.getChildren().addAll(globalPopLabel, settlementName, typeLabel, popLabel, resourceLabel, yearLabel);
+        labelVBox.getChildren().addAll(globalPopLabel, yearLabel);
 
         return labelVBox;
     }
@@ -139,7 +125,7 @@ public class Game extends Scene {
         gc.setFill(Color.GREEN);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        for(MapResource mapResource: mapResources){
+        for (MapResource mapResource : mapResources) {
             mapResource.render(gc, camera);
         }
 
@@ -157,12 +143,6 @@ public class Game extends Scene {
         globalPopLabel.setText("Global Population: " + Math.floor(globalPopulation));
         yearLabel.setText("Current Year: " + Math.floor(currentYear));
 
-        if (target != null) {
-            popLabel.setText("Population: " + Math.floor(target.getPopulation()));
-            typeLabel.setText("Settlement Type: " + target.getType());
-            resourceLabel.setText("Resources: " + target.getResources());
-            settlementName.setText("Settlement Name: " + target.getName());
-        }
 
     }
 
@@ -182,39 +162,47 @@ public class Game extends Scene {
         settlements.add(settlement);
     }
 
-    public Settlement getTarget() {
+    public ClickableObject getTarget() {
         return target;
     }
 
-    public void setTarget(Settlement target) {
-        this.target = target;
+    public void setTarget(ClickableObject target) {
+        if(this.target != null) {
+            this.target.untarget();
+        }
+            this.target = target;
+            this.target.setAsTarget();
+            labelVBox.getChildren().clear();
+            labelVBox.getChildren().addAll(globalPopLabel, yearLabel);
+            labelVBox.getChildren().addAll(target.getLabels());
     }
 
-    public Settlement createNewSettlement(String name, double x, double y){
-        Settlement settlement = new Settlement(this, 9000,x , y, name);
+    public Settlement createNewSettlement(String name, double x, double y) {
+        Settlement settlement = new Settlement(this, 9000, x, y, name);
         settlements.add(settlement);
         setTarget(settlement);
         return settlement;
     }
-    public void promptName(double x, double y){
+
+    public void promptName(double x, double y) {
         TextInputDialog nameDialog = new TextInputDialog("Settlement " + settlements.size());
         nameDialog.setTitle("Set Settlement Name");
         nameDialog.setHeaderText("Name your newest City!!");
         nameDialog.setContentText("Please enter your the name for this settlement:");
         Optional<String> result = nameDialog.showAndWait();
         if (result.isPresent()) {
-            if(!result.get().isEmpty())
-                if(settlements.size() == 0) {
+            if (!result.get().isEmpty())
+                if (settlements.size() == 0) {
                     createNewSettlement(result.get(), x, y);
-                }
-                else {
+                } else {
                     promptPopulationChoice(result.get(), x, y);
                 }
         }
     }
-    public void promptPopulationChoice(String name, double x, double y){
+
+    public void promptPopulationChoice(String name, double x, double y) {
         ArrayList<String> names = new ArrayList<>();
-        for(int i = 0; i < settlements.size(); i++){
+        for (int i = 0; i < settlements.size(); i++) {
             names.add(settlements.get(i).getName());
         }
         ChoiceDialog<String> dialog = new ChoiceDialog<>(names.get(0), names);
@@ -222,10 +210,10 @@ public class Game extends Scene {
         dialog.setHeaderText("Which city would you like to steal 1000 population from?");
         dialog.setContentText("Choose the city here: ");
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
+        if (result.isPresent()) {
             createNewSettlement(name, x, y);
             for (Settlement settlement : settlements) {
-                if(settlement.getName().equals(result.get())){
+                if (settlement.getName().equals(result.get())) {
                     settlement.addPopulation(-10000);
                     break;
                 }
@@ -236,5 +224,9 @@ public class Game extends Scene {
 
     public Camera getCameraTransform() {
         return camera;
+    }
+
+    public ArrayList<MapResource> getMapResources() {
+        return mapResources;
     }
 }

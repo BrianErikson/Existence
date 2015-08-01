@@ -18,14 +18,14 @@ public class Triangle extends Polygon {
         double[] yPoints = getYPoints();
 
         return new Point2D((xPoints[0] + xPoints[1] + xPoints[2]) / 3d,
-                            (yPoints[0] + yPoints[1] + yPoints[2]) / 3d);
+                (yPoints[0] + yPoints[1] + yPoints[2]) / 3d);
     }
 
     @Override
     public void setCenter(Point2D centerPos) {
         //Point2D centroid = getCentroid();
         setTranslation(centerPos.getX(),
-                    centerPos.getY());
+                centerPos.getY());
         update();
     }
 }

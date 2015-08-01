@@ -26,10 +26,10 @@ public class City implements SettlementType {
 
     @Override
     public void render(double population, GraphicsContext gc, Affine transform) {
-        diamond.setScale(population* 0.01d);
+        diamond.setScale(population * 0.01d);
         diamond.setCenter(new Point2D(transform.getTx(), transform.getTy()));
         gc.setFill(Color.YELLOW);
-        gc.fillPolygon(diamond.getXPoints(), diamond.getYPoints(), diamond.getPoints().size()/ 2);
+        gc.fillPolygon(diamond.getXPoints(), diamond.getYPoints(), diamond.getPoints().size() / 2);
     }
 
     @Override
