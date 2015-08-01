@@ -14,6 +14,8 @@ import javafx.scene.transform.Affine;
  */
 public class Town implements SettlementType {
     Triangle triangle;
+    public static int MIN_SIZE = 30;
+    public static int MAX_SIZE = 120;
 
     public Town() {
         triangle = new Triangle();
@@ -26,7 +28,13 @@ public class Town implements SettlementType {
 
     @Override
     public void render(double population, GraphicsContext gc, Affine transform) {
-        triangle.setScale(population * 0.01d);
+        double size = (population/1000) + 20;
+        if (size < MIN_SIZE)
+            size = MIN_SIZE;
+        else if (size > MAX_SIZE)
+            size = MAX_SIZE;
+
+        triangle.setScale(size);
         triangle.setCenter(new Point2D(transform.getTx(), transform.getTy()));
         gc.setFill(Color.BLACK);
         gc.fillPolygon(triangle.getXPoints(), triangle.getYPoints(), triangle.getPoints().size() / 2);
@@ -34,7 +42,7 @@ public class Town implements SettlementType {
 
     @Override
     public double getGrowthRate() {
-        return 0.5d;
+        return 1d;
     }
 
     @Override

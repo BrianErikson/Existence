@@ -122,12 +122,12 @@ public class Settlement implements ClickableObject {
     }
 
     public void checkSettlementType() {
-        if (this.getPopulation() >= 20000) {
+        if (this.getPopulation() >= 1000000) {
             if (!(type instanceof Metropolis)) {
                 type = new Metropolis();
                 this.setGrowthRate(type.getGrowthRate());
             }
-        } else if (this.getPopulation() >= 15000) {
+        } else if (this.getPopulation() >= 100000) {
             if (!(type instanceof City)) {
                 type = new City();
                 this.setGrowthRate(type.getGrowthRate());

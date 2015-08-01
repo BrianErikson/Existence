@@ -14,7 +14,8 @@ import javafx.scene.transform.Affine;
  */
 public class City implements SettlementType {
     Diamond diamond;
-
+    public static int MIN_SIZE = 30;
+    public static int MAX_SIZE = 120;
     public City() {
         diamond = new Diamond();
     }
@@ -26,7 +27,13 @@ public class City implements SettlementType {
 
     @Override
     public void render(double population, GraphicsContext gc, Affine transform) {
-        diamond.setScale(population * 0.01d);
+        double size = (population/10000) + 20;
+        if (size < MIN_SIZE)
+            size = MIN_SIZE;
+        else if (size > MAX_SIZE)
+            size = MAX_SIZE;
+
+        diamond.setScale(size);
         diamond.setCenter(new Point2D(transform.getTx(), transform.getTy()));
         gc.setFill(Color.YELLOW);
         gc.fillPolygon(diamond.getXPoints(), diamond.getYPoints(), diamond.getPoints().size() / 2);
@@ -34,7 +41,7 @@ public class City implements SettlementType {
 
     @Override
     public double getGrowthRate() {
-        return 0.5d;
+        return 1d;
     }
 
     @Override

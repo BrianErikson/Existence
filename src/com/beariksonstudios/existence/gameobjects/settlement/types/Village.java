@@ -10,7 +10,10 @@ import javafx.scene.transform.Affine;
  * Created by Neal on 7/7/2015.
  */
 public class Village implements SettlementType {
+    public static int MIN_SIZE = 30;
+    public static int MAX_SIZE = 120;
     Rectangle rectangle = new Rectangle();
+
 
     @Override
     public String getName() {
@@ -19,7 +22,12 @@ public class Village implements SettlementType {
 
     @Override
     public void render(double population, GraphicsContext gc, Affine transform) {
-        double size = 20 + population / 50;
+        double size = 20 + (population / 100);
+        if (size < MIN_SIZE)
+            size = MIN_SIZE;
+        else if (size > MAX_SIZE)
+            size = MAX_SIZE;
+
         rectangle.setWidth(size);
         rectangle.setHeight(size);
         rectangle.setX(transform.getTx() - rectangle.getWidth() / 2d);
@@ -29,7 +37,7 @@ public class Village implements SettlementType {
 
     @Override
     public double getGrowthRate() {
-        return 0.5d;
+        return 1d;
     }
 
     @Override

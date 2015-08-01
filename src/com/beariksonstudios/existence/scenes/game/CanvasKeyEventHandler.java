@@ -21,16 +21,16 @@ public class CanvasKeyEventHandler implements EventHandler<KeyEvent> {
 
         switch (event.getCode()) {
             case W:
-                cameraTranslation.translate(new Point2D(0d, -Game.MOVE_SPEED));
-                break;
-            case S:
                 cameraTranslation.translate(new Point2D(0d, Game.MOVE_SPEED));
                 break;
+            case S:
+                cameraTranslation.translate(new Point2D(0d, -Game.MOVE_SPEED));
+                break;
             case A:
-                cameraTranslation.translate(new Point2D(-Game.MOVE_SPEED, 0d));
+                cameraTranslation.translate(new Point2D(Game.MOVE_SPEED, 0d));
                 break;
             case D:
-                cameraTranslation.translate(new Point2D(Game.MOVE_SPEED, 0d));
+                cameraTranslation.translate(new Point2D(-Game.MOVE_SPEED, 0d));
                 break;
         }
     }

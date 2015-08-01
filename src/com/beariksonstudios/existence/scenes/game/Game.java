@@ -74,14 +74,20 @@ public class Game extends Scene {
         camera = new Camera();
         camera.setPosition(new Point2D(MAP_SIZE / 2d, MAP_SIZE / 2d));
 
-        for (int i = 0; i < 20; i++) {
-            double x = RANDOM.nextDouble() * -MAP_SIZE;
-            double y = RANDOM.nextDouble() * -MAP_SIZE;
-            System.out.println("X: " + x + " Y: " + y);
-            mapResources.add(new FertileLand(1000, x, y));
+        for (int i = 0; i < 15; i++) {
+            RANDOM.setSeed(System.nanoTime());
+            mapResources.add(new FertileLand(1000, RANDOM.nextDouble() * -MAP_SIZE, RANDOM.nextDouble() * -MAP_SIZE));
             mapResources.add(new Mountain(1000, RANDOM.nextDouble() * -MAP_SIZE, RANDOM.nextDouble() * -MAP_SIZE));
             mapResources.add(new Forest(1000, RANDOM.nextDouble() * -MAP_SIZE, RANDOM.nextDouble() * -MAP_SIZE));
             mapResources.add(new Lake(1000, RANDOM.nextDouble() * -MAP_SIZE, RANDOM.nextDouble() * -MAP_SIZE));
+        }
+
+        for (int i = 0; i < 15; i++) {
+            RANDOM.setSeed(System.nanoTime());
+            mapResources.add(new FertileLand(1000, RANDOM.nextDouble() * -MAP_SIZE+1500, RANDOM.nextDouble() * -MAP_SIZE+1500));
+            mapResources.add(new Mountain(1000, RANDOM.nextDouble() * -MAP_SIZE+1500, RANDOM.nextDouble() * -MAP_SIZE+1500));
+            mapResources.add(new Forest(1000, RANDOM.nextDouble() * -MAP_SIZE+1500, RANDOM.nextDouble() * -MAP_SIZE+1500));
+            mapResources.add(new Lake(1000, RANDOM.nextDouble() * -MAP_SIZE+1500, RANDOM.nextDouble() * -MAP_SIZE+1500));
         }
 
         startRenderTimer();
@@ -178,7 +184,7 @@ public class Game extends Scene {
     }
 
     public Settlement createNewSettlement(String name, double x, double y) {
-        Settlement settlement = new Settlement(this, 9000, x, y, name);
+        Settlement settlement = new Settlement(this, 900000, x, y, name);
         settlements.add(settlement);
         setTarget(settlement);
         return settlement;
@@ -214,7 +220,7 @@ public class Game extends Scene {
             createNewSettlement(name, x, y);
             for (Settlement settlement : settlements) {
                 if (settlement.getName().equals(result.get())) {
-                    settlement.addPopulation(-10000);
+                    settlement.addPopulation(-1000);
                     break;
                 }
             }
