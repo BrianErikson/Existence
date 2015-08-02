@@ -1,8 +1,10 @@
+take away quantity from resources
 Add color spectrum for growth rate feedback
 Fix scaling rates of types
 Make trade routes
 resources effect growth rate
 procedurally generate water resources
+outline clicked settlement and claimed resources
 
 Specific Resources:
     Water

@@ -44,7 +44,7 @@ public class Metropolis implements SettlementType {
 
     @Override
     public double getGrowthRate() {
-        return 1d;
+        return 0.0017d;
     }
 
     @Override

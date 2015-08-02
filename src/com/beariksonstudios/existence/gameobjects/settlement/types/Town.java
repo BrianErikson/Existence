@@ -42,7 +42,7 @@ public class Town implements SettlementType {
 
     @Override
     public double getGrowthRate() {
-        return 1d;
+        return 0.008d;
     }
 
     @Override

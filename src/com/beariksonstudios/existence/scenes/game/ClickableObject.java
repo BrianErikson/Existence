@@ -1,5 +1,6 @@
 package com.beariksonstudios.existence.scenes.game;
 
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.shape.Shape;
 
@@ -18,4 +19,6 @@ public interface ClickableObject {
     public void setAsTarget();
 
     public void untarget();
+
+    public Point2D getPosition();
 }

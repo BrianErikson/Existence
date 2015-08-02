@@ -23,10 +23,12 @@ public abstract class MapResource implements ClickableObject {
 
     private Label type;
     private Label quantityLabel;
+    private Label claim;
     private ArrayList<Label> labels = new ArrayList<>();
 
     private Translate translate;
     private String name;
+    private String claimName = "Unclaimed";
 
     public MapResource(String name, Image texture, int quantity) {
         this(name, texture, quantity, 0, 0);
@@ -41,8 +43,10 @@ public abstract class MapResource implements ClickableObject {
 
         type = new Label("Resource Type: " + name);
         quantityLabel = new Label("Amount: " + quantity);
+        claim = new Label("Claimed By: " + claimName);
         labels.add(type);
         labels.add(quantityLabel);
+        labels.add(claim);
     }
 
     private void createShape(double x, double y, double width, double height) {
@@ -97,6 +101,14 @@ public abstract class MapResource implements ClickableObject {
         translate.setX(x);
         translate.setY(y);
     }
+    public boolean claim(String claimName){
+        if(this.claimName.contains("Unclaimed")) {
+            this.claimName = claimName;
+            claim.setText("Claimed By: " + claimName);
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public Shape getShape() {
@@ -121,5 +133,11 @@ public abstract class MapResource implements ClickableObject {
     @Override
     public void untarget() {
         isTarget = false;
+    }
+
+    @Override
+    public Point2D getPosition(){
+        return new Point2D(translate.getX(), translate.getY());
+
     }
 }

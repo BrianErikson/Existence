@@ -41,7 +41,7 @@ public class City implements SettlementType {
 
     @Override
     public double getGrowthRate() {
-        return 1d;
+        return 0.0012d;
     }
 
     @Override

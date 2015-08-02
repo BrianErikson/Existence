@@ -4,9 +4,11 @@ import com.beariksonstudios.existence.gameobjects.settlement.types.City;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Village;
+import com.beariksonstudios.existence.resources.map.MapResource;
 import com.beariksonstudios.existence.scenes.Camera;
 import com.beariksonstudios.existence.scenes.game.ClickableObject;
 import com.beariksonstudios.existence.scenes.game.Game;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
@@ -17,6 +19,9 @@ import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Neal on 7/6/2015.
@@ -47,6 +52,7 @@ public class Settlement implements ClickableObject {
     private Label typeLabel;
     private Label settlementName;
     private ArrayList<Label> labels = new ArrayList<>();
+    private ArrayList<MapResource> claimedResources = new ArrayList<>();
 
     private boolean isTarget = false;
 
@@ -79,6 +85,16 @@ public class Settlement implements ClickableObject {
         labels.add(settlementName);
 
         this.updateTransform();
+        for (MapResource resource : game.getMapResources()) {
+            Point2D resourcePos = resource.getPosition();
+            double distance = resourcePos.distance(this.getPosition());
+            if(distance < 600){
+                boolean successful = resource.claim(this.name);
+                if(successful){
+                    this.addClaimedResource(resource);
+                }
+            }
+        }
     }
 
     public void render(GraphicsContext gc, Camera camera) {
@@ -172,6 +188,19 @@ public class Settlement implements ClickableObject {
         setGrowthRate(getCurrentGrowthRate());
     }
 
+    public ArrayList<MapResource> getClaimedResources(){
+        return claimedResources;
+    }
+
+    public void addClaimedResource(MapResource resource) {
+        claimedResources.add(resource);
+    }
+
+    public void addClaimedResource(MapResource... resources){
+        Collections.addAll(claimedResources, resources);
+    }
+
+
     @Override
     public ArrayList<Label> getLabels() {
         return labels;
@@ -194,5 +223,10 @@ public class Settlement implements ClickableObject {
     @Override
     public void untarget() {
         isTarget = false;
+    }
+
+    @Override
+    public Point2D getPosition() {
+        return new Point2D(transform.getTx(), transform.getTy());
     }
 }
