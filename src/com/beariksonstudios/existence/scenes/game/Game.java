@@ -184,7 +184,7 @@ public class Game extends Scene {
     }
 
     public Settlement createNewSettlement(String name, double x, double y) {
-        Settlement settlement = new Settlement(this, 900000, x, y, name);
+        Settlement settlement = new Settlement(this, 1000, x, y, name);
         settlements.add(settlement);
         setTarget(settlement);
         return settlement;

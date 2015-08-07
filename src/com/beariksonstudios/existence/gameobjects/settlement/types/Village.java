@@ -13,6 +13,7 @@ public class Village implements SettlementType {
     public static int MIN_SIZE = 30;
     public static int MAX_SIZE = 120;
     Rectangle rectangle = new Rectangle();
+    private static double standardGrowthRate = 0.005d;
 
 
     @Override
@@ -37,7 +38,7 @@ public class Village implements SettlementType {
 
     @Override
     public double getGrowthRate() {
-        return 0.005d;
+        return standardGrowthRate;
     }
 
     @Override

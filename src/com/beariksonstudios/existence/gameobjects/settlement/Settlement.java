@@ -4,6 +4,7 @@ import com.beariksonstudios.existence.gameobjects.settlement.types.City;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Village;
+import com.beariksonstudios.existence.resources.Resource;
 import com.beariksonstudios.existence.resources.map.MapResource;
 import com.beariksonstudios.existence.scenes.Camera;
 import com.beariksonstudios.existence.scenes.game.ClickableObject;
@@ -98,7 +99,12 @@ public class Settlement implements ClickableObject {
     }
 
     public void render(GraphicsContext gc, Camera camera) {
-        age = game.getYearsFromStart() - startYear;
+        double newAge = game.getYearsFromStart() - startYear;
+        if(age < newAge && Math.floor(age) != Math.floor(newAge)){
+            System.out.println("is in");
+            decrementClaimedResources();
+        }
+        age = newAge;
 
         double currentPopCalc = calculatePopulation();
         double populationDiff = currentPopCalc - lastPopCalc;
@@ -114,7 +120,18 @@ public class Settlement implements ClickableObject {
         Affine settlementTransform = transform.clone();
         settlementTransform.append(camera.get());
         type.render(currentPopulation, gc, settlementTransform);
+
         updateUI();
+    }
+
+    private void decrementClaimedResources() {
+        double amount = (currentPopulation * 0.0001);
+        System.out.println(amount);
+        System.out.println(claimedResources.size());
+        for (MapResource claimedResource : claimedResources) {
+            claimedResource.subtractQuantity(amount);
+        }
+
     }
 
     public void updateUI() {
@@ -169,7 +186,7 @@ public class Settlement implements ClickableObject {
         currentGrowthRate = newGrowthRate;
         lastGrowthChange = game.getYearsFromStart();
         initialPopulation = currentPopulation;
-        lastPopCalc = initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
+        lastPopCalc = initialPopulation * Math.pow(Math.E, ((getCurrentGrowthRate() * (age - lastGrowthChange))));
     }
 
     public void updateTransform() {
@@ -194,10 +211,45 @@ public class Settlement implements ClickableObject {
 
     public void addClaimedResource(MapResource resource) {
         claimedResources.add(resource);
+        adjustGrowthRate(resource);
+        System.out.println(currentGrowthRate);
     }
 
     public void addClaimedResource(MapResource... resources){
         Collections.addAll(claimedResources, resources);
+    }
+
+    public void adjustGrowthRate(MapResource resource){
+        System.out.println("adjustGrowthRate");
+        double newGrowthRate = 0d;
+
+        for (Resource specificResource : resource.getSpecificResources()) {
+            switch(specificResource) {
+                case FISH:
+                    newGrowthRate += 0.3d;
+                    break;
+                case WOOD:
+                    newGrowthRate += 0.3d;
+                    break;
+                case WATER:
+                    newGrowthRate += 0.3d;
+                    break;
+                case GRAIN:
+                    newGrowthRate += 0.3d;
+                    break;
+                case FRUIT:
+                    newGrowthRate += 0.3d;
+                    break;
+                case STONE:
+                    newGrowthRate += 0.3d;
+                    break;
+                case METAL:
+                    newGrowthRate += 0.3d;
+                    break;
+            }
+        }
+
+        setGrowthRate(getCurrentGrowthRate() + newGrowthRate);
     }
 
 
