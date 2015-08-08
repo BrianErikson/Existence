@@ -3,7 +3,10 @@ package com.beariksonstudios.existence.scenes.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import com.beariksonstudios.existence.resources.map.*;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -50,16 +53,19 @@ public class Game implements Screen {
         currentYear = initialYear + (secsSinceStart / SECS_PER_YEAR);
         globalPopulation = 0f;
         stage = new Stage();
+
+        Assets.load();
         
         generateResources();
+
+        stage.addActor(getNewBottomPane());
     }
 
     public void generateResources() {
         for(int i = 0; i < 6; i++) {
             float x = RANDOM.nextFloat()  * MAP_SIZE;
             float y = RANDOM.nextFloat()  * MAP_SIZE;
-            
-            addMapResource(new FertileLand(1000,x, y));
+            addMapResource(new FertileLand(1000, x, y));
             addMapResource(new Mountain(1000, RANDOM.nextFloat() * MAP_SIZE, RANDOM.nextFloat() * MAP_SIZE));
             addMapResource(new Forest(1000,RANDOM.nextFloat() * MAP_SIZE, RANDOM.nextFloat() * MAP_SIZE));
             addMapResource(new Lake(1000,RANDOM.nextFloat() * MAP_SIZE, RANDOM.nextFloat() * MAP_SIZE));
@@ -72,7 +78,13 @@ public class Game implements Screen {
     }
 
     private VisTable getNewBottomPane() {
+
         VisTable table = new VisTable(true);
+        NinePatchDrawable tableBg = new NinePatchDrawable(new NinePatch(Assets.manager.get("ui/bottomPane.png",
+                Texture.class), 8,8,8,8));
+        table.setBackground(tableBg);
+        table.setWidth(Gdx.graphics.getWidth());
+        table.setHeight(Gdx.graphics.getHeight() / 4f);
 
         popLabel = new VisLabel("Population: " + "No current Settlements in this Kingdom me Lord");
         resourceLabel = new VisLabel("Resource: " + "Me Lord! We have no resources!");
@@ -81,16 +93,16 @@ public class Game implements Screen {
         globalPopLabel = new VisLabel("Global Population: " + "There are no homes for our women to give birth");
         settlementName = new VisLabel("Settlement Name: ");
 
-        table.add(popLabel).fill(true, false);
-        table.addSeparator(true);
+        table.add(popLabel).fill(true, false).expand();
+        table.row();
         table.add(resourceLabel).fill(true, false);
-        table.addSeparator(true);
+        table.row();
         table.add(typeLabel).fill(true, false);
-        table.addSeparator(true);
+        table.row();
         table.add(yearLabel).fill(true, false);
-        table.addSeparator(true);
+        table.row();
         table.add(globalPopLabel).fill(true, false);
-        table.addSeparator(true);
+        table.row();
         table.add(settlementName).fill(true, false);
 
         return table;
@@ -188,8 +200,8 @@ public class Game implements Screen {
         currentYear = initialYear + (secsSinceStart / SECS_PER_YEAR);
         yearsFromStart = currentYear - initialYear;
 
-        Gdx.gl.glClear(GL20.GL_COLOR_CLEAR_VALUE);
         Gdx.gl.glClearColor(0f, 1f, 0f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         stage.draw();
 

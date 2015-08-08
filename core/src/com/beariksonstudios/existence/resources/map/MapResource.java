@@ -3,6 +3,7 @@ package com.beariksonstudios.existence.resources.map;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.beariksonstudios.existence.scenes.game.Assets;
 
 /**
  * Created by Neal on 7/26/2015.
@@ -11,13 +12,13 @@ public abstract class MapResource extends Actor {
     private Texture texture;
     private int quantity;
 
-    public MapResource(Texture texture, int quantity){
-        this.texture = texture;
+    public MapResource(String textureName, int quantity){
+        this.texture = Assets.manager.get("map_resources/" + textureName, Texture.class);
         this.quantity = quantity;
     }
 
-    public MapResource(Texture texture, int quantity, float x, float y){
-        this(texture, quantity);
+    public MapResource(String textureName, int quantity, float x, float y){
+        this(textureName, quantity);
         setPosition(x, y);
     }
 
