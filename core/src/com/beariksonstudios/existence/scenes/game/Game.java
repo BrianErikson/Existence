@@ -75,7 +75,6 @@ public class Game implements Screen {
         generateResources();
 
         uiStage.addActor(getNewBottomPane());
-        uiStage.setDebugAll(true);
     }
 
     public void generateResources() {
