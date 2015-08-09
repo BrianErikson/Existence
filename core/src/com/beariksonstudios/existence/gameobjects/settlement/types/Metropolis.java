@@ -14,6 +14,8 @@ import com.beariksonstudios.existence.scenes.game.Assets;
 public class Metropolis implements SettlementType {
     private Texture star = Assets.manager.get("settlements/Star.png", Texture.class);
     private Image settlementImage;
+    public static int MIN_SIZE = 10;
+    public static int MAX_SIZE = 200;
 
     public Metropolis(Image image) {
         settlementImage = image;
@@ -27,13 +29,17 @@ public class Metropolis implements SettlementType {
 
     @Override
     public void update(double population) {
-        float size = (float)(population * 0.005d);
+        float size = ((float)population/100000) - 20;
+        if (size < MIN_SIZE)
+            size = MIN_SIZE;
+        else if (size > MAX_SIZE)
+            size = MAX_SIZE;
         settlementImage.setSize(size, size);
     }
 
     @Override
     public float getGrowthRate() {
-        return 0.5f;
+        return 0.0017f;
     }
 
     @Override

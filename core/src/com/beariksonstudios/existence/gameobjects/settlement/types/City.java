@@ -14,6 +14,8 @@ import com.beariksonstudios.existence.scenes.game.Assets;
 public class City implements SettlementType {
     private Texture diamond = Assets.manager.get("settlements/Diamond.png", Texture.class);
     private Image settlementImage;
+    public static int MIN_SIZE = 30;
+    public static int MAX_SIZE = 120;
 
     public City(Image image) {
         settlementImage = image;
@@ -27,13 +29,17 @@ public class City implements SettlementType {
 
     @Override
     public void update(double population) {
-        float size = (float)(population * 0.01d);
+        float size = ((float)population/10000) + 20;
+        if (size < MIN_SIZE)
+            size = MIN_SIZE;
+        else if (size > MAX_SIZE)
+             size = MAX_SIZE;
         settlementImage.setSize(size, size);
     }
 
     @Override
     public float getGrowthRate() {
-        return 0.5f;
+        return 0.0012f;
     }
 
     @Override

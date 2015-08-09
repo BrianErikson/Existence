@@ -13,6 +13,8 @@ import com.beariksonstudios.existence.scenes.game.Assets;
 public class Village implements SettlementType {
     private Texture rectangle = Assets.manager.get("settlements/Rectangle.png", Texture.class);
     private Image settlementImage;
+    public static int MIN_SIZE = 30;
+    public static int MAX_SIZE = 120;
 
     public Village(Image image) {
         settlementImage = image;
@@ -26,13 +28,17 @@ public class Village implements SettlementType {
 
     @Override
     public void update(double population) {
-        float size = (float)(20d + population / 50d);
+        float size = (float)(20d + population / 100d);
+        if (size < MIN_SIZE)
+            size = MIN_SIZE;
+        else if (size > MAX_SIZE)
+            size = MAX_SIZE;
         settlementImage.setSize(size, size);
     }
 
     @Override
     public float getGrowthRate() {
-        return 0.5f;
+        return 0.005f;
     }
 
     @Override

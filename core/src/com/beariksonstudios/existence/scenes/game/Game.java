@@ -7,10 +7,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.beariksonstudios.existence.gameobjects.ClickableObject;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import com.beariksonstudios.existence.resources.map.*;
 import com.beariksonstudios.existence.ui.prompt.Prompt;
@@ -29,18 +33,11 @@ public class Game implements Screen {
     public static double MS_PER_SEC = 1000;
     public static double SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
     public static float MAP_SIZE = 3000f;
-    public static int SETTLEMENT_COST = 10000;
+    public static int SETTLEMENT_COST = 1000;
     private final InputProcessor input;
 
     private Stage stage;
     private Stage uiStage;
-
-    private VisLabel popLabel;
-    private VisLabel resourceLabel;
-    private VisLabel yearLabel;
-    private VisLabel typeLabel;
-    private VisLabel globalPopLabel;
-    private VisLabel settlementName;
 
     private double startTime = System.currentTimeMillis();
     private double secsSinceStart;
@@ -49,19 +46,24 @@ public class Game implements Screen {
     private double initialYear;
     private double yearsFromStart;
 
+    private VisLabel globalPopLabel;
+    private VisLabel yearLabel;
+
     private float globalPopulation;
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
-    private Settlement target;
+    private ClickableObject target;
 
     private final Random RANDOM = new Random(System.currentTimeMillis());
     private ArrayList<MapResource> mapResources = new ArrayList<MapResource>();
     private Prompt openPrompt;
+    private VisTable labelTable;
 
     public Game() {
         secsSinceStart = (System.currentTimeMillis() - startTime) / MS_PER_SEC;
         initialYear = 1900d;
         currentYear = initialYear + (secsSinceStart / SECS_PER_YEAR);
         globalPopulation = 0f;
+
         stage = new Stage();
         uiStage = new Stage();
 
@@ -73,6 +75,7 @@ public class Game implements Screen {
         generateResources();
 
         uiStage.addActor(getNewBottomPane());
+        uiStage.setDebugAll(true);
     }
 
     public void generateResources() {
@@ -86,52 +89,42 @@ public class Game implements Screen {
         }
     }
     
-    private void addMapResource(MapResource mapResource) {
+    private void addMapResource(final MapResource mapResource) {
+        final Game _this = this;
+        mapResource.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                _this.setTarget(mapResource);
+                return true;
+            }
+        });
         mapResources.add(mapResource);
         stage.addActor(mapResource);
     }
 
     private VisTable getNewBottomPane() {
 
-        VisTable table = new VisTable(true);
+        labelTable = new VisTable(true);
+        labelTable.align(Align.topLeft);
         NinePatchDrawable tableBg = new NinePatchDrawable(new NinePatch(Assets.manager.get("ui/bottomPane.png",
                 Texture.class), 8,8,8,8));
-        table.setBackground(tableBg);
-        table.setWidth(Gdx.graphics.getWidth());
-        table.setHeight(Gdx.graphics.getHeight() / 4f);
+        labelTable.setBackground(tableBg);
+        labelTable.setWidth(Gdx.graphics.getWidth());
+        labelTable.setHeight(Gdx.graphics.getHeight() / 3.5f);
 
-        popLabel = new VisLabel("Population: " + "No current Settlements in this Kingdom me Lord");
-        resourceLabel = new VisLabel("Resource: " + "Me Lord! We have no resources!");
-        typeLabel = new VisLabel("Settlement Type: " + "Your people wander and suffer aimlessly");
         yearLabel = new VisLabel("Current Year: " + initialYear);
         globalPopLabel = new VisLabel("Global Population: " + "There are no homes for our women to give birth");
-        settlementName = new VisLabel("Settlement Name: ");
 
-        table.add(popLabel).fill(true, false).expand();
-        table.row();
-        table.add(resourceLabel).fill(true, false);
-        table.row();
-        table.add(typeLabel).fill(true, false);
-        table.row();
-        table.add(yearLabel).fill(true, false);
-        table.row();
-        table.add(globalPopLabel).fill(true, false);
-        table.row();
-        table.add(settlementName).fill(true, false);
+        labelTable.add(yearLabel).fill(true, false);
+        labelTable.row();
+        labelTable.add(globalPopLabel).fill(true, false);
 
-        return table;
+        return labelTable;
     }
 
     public void updateUI() {
         globalPopLabel.setText("Global Population: " + Math.floor(globalPopulation));
         yearLabel.setText("Current Year: " + Math.floor(currentYear));
-
-        if (target != null) {
-            popLabel.setText("Population: " + Math.floor(target.getPopulation()));
-            typeLabel.setText("Settlement Type: " + target.getType());
-            resourceLabel.setText("Resources: " + target.getResources());
-            settlementName.setText("Settlement Name: " + target.getName());
-        }
 
         if (openPrompt != null && !openPrompt.isOpen()) {
             openPrompt = null;
@@ -154,16 +147,40 @@ public class Game implements Screen {
         settlements.add(settlement);
     }
 
-    public Settlement getTarget() {
+    public ClickableObject getTarget() {
         return target;
     }
 
-    public void setTarget(Settlement target) {
+    public void setTarget(ClickableObject target) {
+        if(this.target != null) {
+            this.target.untarget();
+        }
         this.target = target;
+        this.target.setAsTarget();
+        labelTable.clear();
+
+        labelTable.add(yearLabel).fill(true, false);
+        labelTable.row();
+        labelTable.add(globalPopLabel).fill(true, false);
+        labelTable.row();
+
+        for (VisLabel label : target.getLabels()) {
+            labelTable.add(label).fill(true, false);
+            labelTable.row();
+        }
     }
 
     public Settlement createNewSettlement(String name, float x, float y){
-        Settlement settlement = new Settlement(this, 9000,x , y, name);
+        final Settlement settlement = new Settlement(this, SETTLEMENT_COST, x, y, name);
+        final Game _this = this;
+        settlement.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                _this.setTarget(settlement);
+                return true;
+            }
+        });
+
         settlements.add(settlement);
         stage.addActor(settlement);
         setTarget(settlement);
@@ -248,6 +265,10 @@ public class Game implements Screen {
         });
     }
 
+    public ArrayList<MapResource> getMapResources() {
+        return mapResources;
+    }
+
     @Override
     public void show() {
         
@@ -282,7 +303,8 @@ public class Game implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, true);
+        uiStage.getViewport().update(width, height, true);
     }
 
     @Override
