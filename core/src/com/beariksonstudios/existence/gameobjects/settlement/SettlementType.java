@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 public interface SettlementType {
     String getName();
 
-    void update(float population);
+    void update(double population);
 
     float getGrowthRate();
 

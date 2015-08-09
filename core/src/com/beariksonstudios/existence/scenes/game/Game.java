@@ -26,9 +26,9 @@ import java.util.Random;
  * Created by Neal on 7/3/2015.
  */
 public class Game implements Screen {
-    public static long MS_PER_SEC = 1000;
-    public static float SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
-    public static float MAP_SIZE = 3000;
+    public static double MS_PER_SEC = 1000;
+    public static double SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
+    public static float MAP_SIZE = 3000f;
     public static int SETTLEMENT_COST = 10000;
     private final InputProcessor input;
 
@@ -42,25 +42,24 @@ public class Game implements Screen {
     private VisLabel globalPopLabel;
     private VisLabel settlementName;
 
-    private float startTime = System.currentTimeMillis();
-    private float secsSinceStart;
+    private double startTime = System.currentTimeMillis();
+    private double secsSinceStart;
 
-    private float currentYear;
-    private float initialYear;
-    private float yearsFromStart;
+    private double currentYear;
+    private double initialYear;
+    private double yearsFromStart;
 
     private float globalPopulation;
     private ArrayList<Settlement> settlements = new ArrayList<Settlement>();
     private Settlement target;
 
-    public static int MOVE_SPEED = 10;
     private final Random RANDOM = new Random(System.currentTimeMillis());
     private ArrayList<MapResource> mapResources = new ArrayList<MapResource>();
     private Prompt openPrompt;
 
     public Game() {
         secsSinceStart = (System.currentTimeMillis() - startTime) / MS_PER_SEC;
-        initialYear = 1900;
+        initialYear = 1900d;
         currentYear = initialYear + (secsSinceStart / SECS_PER_YEAR);
         globalPopulation = 0f;
         stage = new Stage();
@@ -139,11 +138,11 @@ public class Game implements Screen {
         }
     }
 
-    public float getYearsFromStart() {
+    public double getYearsFromStart() {
         return yearsFromStart;
     }
 
-    public float getCurrentYear() {
+    public double getCurrentYear() {
         return currentYear;
     }
 
@@ -166,6 +165,7 @@ public class Game implements Screen {
     public Settlement createNewSettlement(String name, float x, float y){
         Settlement settlement = new Settlement(this, 9000,x , y, name);
         settlements.add(settlement);
+        stage.addActor(settlement);
         setTarget(settlement);
         return settlement;
     }
@@ -262,7 +262,9 @@ public class Game implements Screen {
         Gdx.gl.glClearColor(0f, 0.7f, 0.1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        input.update();
+        if (openPrompt == null) {
+            input.update(); // game input (WSAD, etc)
+        }
 
         stage.act();
         stage.draw();

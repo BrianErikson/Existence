@@ -2,6 +2,8 @@ package com.beariksonstudios.existence.gameobjects.settlement.types;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.beariksonstudios.existence.gameobjects.settlement.SettlementType;
 
 
@@ -10,11 +12,11 @@ import com.beariksonstudios.existence.gameobjects.settlement.SettlementType;
  */
 public class Metropolis implements SettlementType {
     private Texture star = new Texture("settlements/Star.png");
-    private Sprite settlementSprite;
+    private Image settlementImage;
 
-    public Metropolis(Sprite sprite) {
-        settlementSprite = sprite;
-        settlementSprite.setTexture(star);
+    public Metropolis(Image image) {
+        settlementImage = image;
+        settlementImage.setDrawable(new SpriteDrawable(new Sprite(star)));
     }
 
     @Override
@@ -23,8 +25,8 @@ public class Metropolis implements SettlementType {
     }
 
     @Override
-    public void update(float population) {
-        settlementSprite.setScale(population * 0.001f);
+    public void update(double population) {
+        settlementImage.setScale((float)(population * 0.001d));
     }
 
     @Override

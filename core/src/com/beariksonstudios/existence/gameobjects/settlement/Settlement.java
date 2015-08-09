@@ -2,7 +2,8 @@ package com.beariksonstudios.existence.gameobjects.settlement;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 import com.beariksonstudios.existence.gameobjects.settlement.types.City;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
@@ -12,15 +13,15 @@ import com.beariksonstudios.existence.scenes.game.Game;
 /**
  * Created by Neal on 7/6/2015.
  */
-public class Settlement extends Sprite {
+public class Settlement extends Image {
     private Game game;
-    private float initialPopulation;
-    private float currentPopulation;
-    private float lastPopCalc;
+    private double initialPopulation;
+    private double currentPopulation;
+    private double lastPopCalc;
 
-    private float startYear;
-    private float age;
-    private float lastGrowthChange; // last year in which the growth changed
+    private double startYear;
+    private double age;
+    private double lastGrowthChange; // last year in which the growth changed
 
     private SettlementType type;
     private float currentGrowthRate;
@@ -28,7 +29,7 @@ public class Settlement extends Sprite {
     private String name;
 
 
-    public Settlement(Game game, float initialPopulation, float x, float y, String name) {
+    public Settlement(Game game, long initialPopulation, float x, float y, String name) {
         this.game = game;
         this.name = name;
         this.initialPopulation = initialPopulation;
@@ -39,7 +40,7 @@ public class Settlement extends Sprite {
 
         type = new Village(this);
         setGrowthRate(type.getGrowthRate());
-        setCenter(x, y);
+        setPosition(x, y, Align.center);
     }
 
     @Override
@@ -51,8 +52,8 @@ public class Settlement extends Sprite {
     public void update() {
         age = game.getYearsFromStart() - startYear;
 
-        float currentPopCalc = calculatePopulation();
-        float populationDiff = currentPopCalc - lastPopCalc;
+        double currentPopCalc = calculatePopulation();
+        double populationDiff = currentPopCalc - lastPopCalc;
         if (populationDiff > 0) {
             lastPopCalc = currentPopCalc;
             currentPopulation += populationDiff;
@@ -63,7 +64,7 @@ public class Settlement extends Sprite {
         type.update(currentPopulation);
     }
 
-    public float getPopulation() {
+    public double getPopulation() {
         return currentPopulation;
     }
 
@@ -108,11 +109,11 @@ public class Settlement extends Sprite {
         currentGrowthRate = newGrowthRate;
         lastGrowthChange = game.getYearsFromStart();
         initialPopulation = currentPopulation;
-        lastPopCalc = initialPopulation * (float) Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
+        lastPopCalc = initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
     }
 
-    public float calculatePopulation() {
-        return initialPopulation * (float) Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
+    public double calculatePopulation() {
+        return initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
     }
 
     public Texture getTexture() {

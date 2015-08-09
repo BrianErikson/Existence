@@ -3,6 +3,7 @@ package com.beariksonstudios.existence.scenes.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 
@@ -57,7 +58,9 @@ public class InputProcessor implements com.badlogic.gdx.InputProcessor {
         Vector3 worldVec = camera.unproject(new Vector3(screenX, screenY, 0f));
         boolean hit = false;
         for (Settlement settlement : game.getSettlements()) {
-            hit = settlement.getBoundingRectangle().contains(worldVec.x, worldVec.y);
+            Rectangle rect = new Rectangle(settlement.getX(), settlement.getY(), settlement.getImageWidth(),
+                    settlement.getImageHeight());
+            hit = rect.contains(worldVec.x, worldVec.y);
             if (hit) {
                 game.setTarget(settlement);
                 break;

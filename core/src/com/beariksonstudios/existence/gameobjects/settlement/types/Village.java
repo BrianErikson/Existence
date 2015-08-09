@@ -2,6 +2,8 @@ package com.beariksonstudios.existence.gameobjects.settlement.types;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.beariksonstudios.existence.gameobjects.settlement.SettlementType;
 
 /**
@@ -9,11 +11,11 @@ import com.beariksonstudios.existence.gameobjects.settlement.SettlementType;
  */
 public class Village implements SettlementType {
     private Texture rectangle = new Texture("settlements/Rectangle.png");
-    private Sprite settlementSprite;
+    private Image settlementImage;
 
-    public Village(Sprite sprite) {
-        settlementSprite = sprite;
-        settlementSprite.setTexture(rectangle);
+    public Village(Image image) {
+        settlementImage = image;
+        settlementImage.setDrawable(new SpriteDrawable(new Sprite(rectangle)));
     }
 
     @Override
@@ -22,8 +24,8 @@ public class Village implements SettlementType {
     }
 
     @Override
-    public void update(float population) {
-        settlementSprite.setScale(20f + population / 50);
+    public void update(double population) {
+        settlementImage.setScale((float)(20d + population / 50d));
     }
 
     @Override
