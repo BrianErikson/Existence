@@ -1,0 +1,25 @@
+
+Add color spectrum for growth rate feedback
+Fix scaling rates of types
+Make trade routes
+resources effect growth rate
+procedurally generate water resources
+outline clicked settlement and its claimed resources
+
+Specific Resources:
+    Water
+    Wood
+    Stone
+    Grain
+    Fish
+    Fruit
+
+General Resources:
+    Fertile land
+    Rivers
+    Lakes
+    Mountains - Stone, metals
+    Forest - wood
+
+
+
