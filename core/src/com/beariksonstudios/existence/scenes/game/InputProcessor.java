@@ -31,7 +31,6 @@ public class InputProcessor implements com.badlogic.gdx.InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("Clicked!");
         Camera camera = game.getStage().getCamera();
         Vector3 worldVec = camera.unproject(new Vector3(screenX, screenY, 0f));
         boolean hit = false;

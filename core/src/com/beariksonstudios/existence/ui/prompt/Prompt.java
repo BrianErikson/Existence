@@ -1,6 +1,8 @@
 package com.beariksonstudios.existence.ui.prompt;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
@@ -11,22 +13,28 @@ import java.util.TimerTask;
  * Created by BrianErikson on 8/9/2015.
  */
 public abstract class Prompt {
-    private boolean isOpen = true;
+    private boolean isOpen = false;
     private final VisWindow window;
     private final Stage stage;
 
     public Prompt(Stage stage, String title) {
         this.stage = stage;
-        window = new VisWindow(title, true);
+        window = new VisWindow(title);
         window.setWidth(Gdx.graphics.getWidth() / 3f);
         window.setHeight(Gdx.graphics.getHeight() / 3f);
         window.setKeepWithinStage(true);
 
         window.addCloseButton();
-        window.fadeOut(0);
-        stage.addActor(window);
-        window.centerWindow();
-        window.fadeIn();
+
+        // stifle new windows if clicking on window but not widgets
+        window.addListener(new EventListener() {
+            @Override
+            public boolean handle(Event event) {
+                return true;
+            }
+        });
+
+        open();
     }
 
     public VisWindow getWindow() {
@@ -39,9 +47,10 @@ public abstract class Prompt {
 
     public void open() {
         if (!isOpen) {
+            isOpen = true;
             stage.addActor(window);
             window.centerWindow();
-            window.fadeIn();
+            //window.fadeIn();
         }
     }
 

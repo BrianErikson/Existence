@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import com.beariksonstudios.existence.resources.map.*;
+import com.beariksonstudios.existence.ui.prompt.Prompt;
 import com.beariksonstudios.existence.ui.prompt.SelectBoxPrompt;
 import com.beariksonstudios.existence.ui.prompt.TextInputPrompt;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -53,6 +54,7 @@ public class Game implements Screen {
     public static int MOVE_SPEED = 10;
     private final Random RANDOM = new Random(System.currentTimeMillis());
     private ArrayList<MapResource> mapResources = new ArrayList<MapResource>();
+    private Prompt openPrompt;
 
     public Game() {
         secsSinceStart = (System.currentTimeMillis() - startTime) / MS_PER_SEC;
@@ -128,6 +130,9 @@ public class Game implements Screen {
             settlementName.setText("Settlement Name: " + target.getName());
         }
 
+        if (openPrompt != null && !openPrompt.isOpen()) {
+            openPrompt = null;
+        }
     }
 
     public float getYearsFromStart() {
@@ -165,9 +170,22 @@ public class Game implements Screen {
         return stage;
     }
 
+    public void closeOpenPrompt() {
+        if (openPrompt != null && openPrompt.isOpen()) {
+            openPrompt.close();
+        }
+        openPrompt = null;
+    }
+
     public void promptName(final float x, final float y){
-        final TextInputPrompt prompt = new TextInputPrompt(getStage(), "Set Settlement Name", "Name your newest city!!", "OK",
+        if (openPrompt != null) {
+            return;
+        }
+
+        final TextInputPrompt prompt = new TextInputPrompt(getStage(), "Set Settlement Name", "Name your newest " +
+                "city!!", "OK",
                 "Cancel");
+        openPrompt = prompt;
 
         prompt.addConfirmListener(new ChangeListener() {
             @Override
@@ -175,11 +193,11 @@ public class Game implements Screen {
                 String text = prompt.getField().getText();
                 if (text.length() > 0) {
                     if (settlements.size() < 1) {
-                        prompt.close();
+                        closeOpenPrompt();
                         createNewSettlement(text, x, y);
                     }
                     else {
-                        prompt.close();
+                        closeOpenPrompt();
                         promptPopulationChoice(text, x, y);
                     }
                 }
@@ -187,6 +205,10 @@ public class Game implements Screen {
         });
     }
     public void promptPopulationChoice(final String name, final float x, final float y){
+        if (openPrompt != null) {
+            return;
+        }
+
         Array<String> names = new Array<String>();
         for(int i = 0; i < settlements.size(); i++){
             names.add(settlements.get(i).getName());
@@ -194,6 +216,7 @@ public class Game implements Screen {
 
         final SelectBoxPrompt prompt = new SelectBoxPrompt(getStage(), "Choose a City", "Which city would you like to steal" +
                 " 1000 population from?" ,names, "OK", "Cancel");
+        openPrompt = prompt;
 
         prompt.addConfirmListener(new ChangeListener() {
             @Override
@@ -209,8 +232,8 @@ public class Game implements Screen {
                 }
 
                 if (removed) {
+                    closeOpenPrompt();
                     createNewSettlement(name, x, y);
-                    prompt.close();
                 }
             }
         });
@@ -227,9 +250,10 @@ public class Game implements Screen {
         currentYear = initialYear + (secsSinceStart / SECS_PER_YEAR);
         yearsFromStart = currentYear - initialYear;
 
-        Gdx.gl.glClearColor(0f, 1f, 0f, 1f);
+        Gdx.gl.glClearColor(0f, 0.7f, 0.1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        stage.act();
         stage.draw();
 
         globalPopulation = 0;
