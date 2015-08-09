@@ -2,18 +2,18 @@ package com.beariksonstudios.existence.resources.map;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.beariksonstudios.existence.scenes.game.Assets;
 
 /**
  * Created by Neal on 7/26/2015.
  */
-public abstract class MapResource extends Actor {
+public abstract class MapResource extends Image {
     private Texture texture;
     private int quantity;
 
     public MapResource(String textureName, int quantity){
-        this.texture = Assets.manager.get("map_resources/" + textureName, Texture.class);
+        super(Assets.manager.get("map_resources/" + textureName, Texture.class));
         this.quantity = quantity;
     }
 
@@ -49,7 +49,5 @@ public abstract class MapResource extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-
-        batch.draw(texture, getX(), getY());
     }
 }

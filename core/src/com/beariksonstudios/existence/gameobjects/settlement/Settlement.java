@@ -2,8 +2,8 @@ package com.beariksonstudios.existence.gameobjects.settlement;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Align;
 import com.beariksonstudios.existence.gameobjects.settlement.types.City;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Metropolis;
 import com.beariksonstudios.existence.gameobjects.settlement.types.Town;
@@ -27,7 +27,7 @@ public class Settlement extends Image {
     private float currentGrowthRate;
 
     private String name;
-
+    private Vector2 position;
 
     public Settlement(Game game, long initialPopulation, float x, float y, String name) {
         this.game = game;
@@ -40,12 +40,14 @@ public class Settlement extends Image {
 
         type = new Village(this);
         setGrowthRate(type.getGrowthRate());
-        setPosition(x, y, Align.center);
+        position = new Vector2(x,y);
+        setPosition(position.x - getImageWidth() / 2f, position.y - getImageHeight() / 2f);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+        setPosition(position.x - getImageWidth() / 2f, position.y - getImageHeight() / 2f);
         update();
     }
 
