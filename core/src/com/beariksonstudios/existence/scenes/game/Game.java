@@ -1,14 +1,20 @@
 package com.beariksonstudios.existence.scenes.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
 import com.beariksonstudios.existence.resources.map.*;
+import com.beariksonstudios.existence.ui.prompt.SelectBoxPrompt;
+import com.beariksonstudios.existence.ui.prompt.TextInputPrompt;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 
@@ -22,6 +28,7 @@ public class Game implements Screen {
     public static long MS_PER_SEC = 1000;
     public static float SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
     public static float MAP_SIZE = 3000;
+    public static int SETTLEMENT_COST = 10000;
     
     private Stage stage;
 
@@ -53,6 +60,8 @@ public class Game implements Screen {
         currentYear = initialYear + (secsSinceStart / SECS_PER_YEAR);
         globalPopulation = 0f;
         stage = new Stage();
+
+        Gdx.input.setInputProcessor(new InputMultiplexer(stage, new InputProcessor(this)));
 
         Assets.load();
         
@@ -151,42 +160,60 @@ public class Game implements Screen {
         setTarget(settlement);
         return settlement;
     }
-    public void promptName(float x, float y){
-        /*TextInputDialog nameDialog = new TextInputDialog("Settlement " + settlements.size());
-        nameDialog.setTitle("Set Settlement Name");
-        nameDialog.setHeaderText("Name your newest City!!");
-        nameDialog.setContentText("Please enter your the name for this settlement:");
-        Optional<String> result = nameDialog.showAndWait();
-        if (result.isPresent()) {
-            if(!result.get().isEmpty())
-                if(settlements.size() == 0) {
-                    createNewSettlement(result.get(), x, y);
-                }
-                else {
-                    promptPopulationChoice(result.get(), x, y);
-                }
-        }*/
+
+    public Stage getStage() {
+        return stage;
     }
-    public void promptPopulationChoice(String name, float x, float y){
-        ArrayList<String> names = new ArrayList<String>();
+
+    public void promptName(final float x, final float y){
+        final TextInputPrompt prompt = new TextInputPrompt(getStage(), "Set Settlement Name", "Name your newest city!!", "OK",
+                "Cancel");
+
+        prompt.addConfirmListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                String text = prompt.getField().getText();
+                if (text.length() > 0) {
+                    if (settlements.size() < 1) {
+                        prompt.close();
+                        createNewSettlement(text, x, y);
+                    }
+                    else {
+                        prompt.close();
+                        promptPopulationChoice(text, x, y);
+                    }
+                }
+            }
+        });
+    }
+    public void promptPopulationChoice(final String name, final float x, final float y){
+        Array<String> names = new Array<String>();
         for(int i = 0; i < settlements.size(); i++){
             names.add(settlements.get(i).getName());
         }
-        /*ChoiceDialog<String> dialog = new ChoiceDialog<>(names.get(0), names);
-        dialog.setTitle("Choose a City");
-        dialog.setHeaderText("Which city would you like to steal 1000 population from?");
-        dialog.setContentText("Choose the city here: ");
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
-            createNewSettlement(name, x, y);
-            for (Settlement settlement : settlements) {
-                if(settlement.getName().equals(result.get())){
-                    settlement.addPopulation(-10000);
-                    break;
+
+        final SelectBoxPrompt prompt = new SelectBoxPrompt(getStage(), "Choose a City", "Which city would you like to steal" +
+                " 1000 population from?" ,names, "OK", "Cancel");
+
+        prompt.addConfirmListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                String takeFrom = prompt.getSelectedItem();
+                boolean removed = false;
+                for (Settlement settlement : settlements) {
+                    if(settlement.getName().equals(takeFrom)){
+                        settlement.addPopulation(-SETTLEMENT_COST);
+                        removed = true;
+                        break;
+                    }
+                }
+
+                if (removed) {
+                    createNewSettlement(name, x, y);
+                    prompt.close();
                 }
             }
-
-        }*/
+        });
     }
 
     @Override
