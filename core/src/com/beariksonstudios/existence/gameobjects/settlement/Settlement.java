@@ -39,6 +39,7 @@ public class Settlement extends Sprite {
 
         type = new Village(this);
         setGrowthRate(type.getGrowthRate());
+        setCenter(x, y);
     }
 
     @Override

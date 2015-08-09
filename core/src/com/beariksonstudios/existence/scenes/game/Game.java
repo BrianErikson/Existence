@@ -30,8 +30,10 @@ public class Game implements Screen {
     public static float SECS_PER_YEAR = 10; // seconds (in real-time) per game-year
     public static float MAP_SIZE = 3000;
     public static int SETTLEMENT_COST = 10000;
-    
+    private final InputProcessor input;
+
     private Stage stage;
+    private Stage uiStage;
 
     private VisLabel popLabel;
     private VisLabel resourceLabel;
@@ -62,14 +64,16 @@ public class Game implements Screen {
         currentYear = initialYear + (secsSinceStart / SECS_PER_YEAR);
         globalPopulation = 0f;
         stage = new Stage();
+        uiStage = new Stage();
 
-        Gdx.input.setInputProcessor(new InputMultiplexer(stage, new InputProcessor(this)));
+        input = new InputProcessor(this);
+        Gdx.input.setInputProcessor(new InputMultiplexer(stage, input, uiStage));
 
         Assets.load();
         
         generateResources();
 
-        stage.addActor(getNewBottomPane());
+        uiStage.addActor(getNewBottomPane());
     }
 
     public void generateResources() {
@@ -170,6 +174,10 @@ public class Game implements Screen {
         return stage;
     }
 
+    public Stage getUiStage() {
+        return uiStage;
+    }
+
     public void closeOpenPrompt() {
         if (openPrompt != null && openPrompt.isOpen()) {
             openPrompt.close();
@@ -182,7 +190,7 @@ public class Game implements Screen {
             return;
         }
 
-        final TextInputPrompt prompt = new TextInputPrompt(getStage(), "Set Settlement Name", "Name your newest " +
+        final TextInputPrompt prompt = new TextInputPrompt(getUiStage(), "Set Settlement Name", "Name your newest " +
                 "city!!", "OK",
                 "Cancel");
         openPrompt = prompt;
@@ -214,7 +222,8 @@ public class Game implements Screen {
             names.add(settlements.get(i).getName());
         }
 
-        final SelectBoxPrompt prompt = new SelectBoxPrompt(getStage(), "Choose a City", "Which city would you like to steal" +
+        final SelectBoxPrompt prompt = new SelectBoxPrompt(getUiStage(), "Choose a City", "Which city would you like " +
+                "to steal" +
                 " 1000 population from?" ,names, "OK", "Cancel");
         openPrompt = prompt;
 
@@ -253,8 +262,13 @@ public class Game implements Screen {
         Gdx.gl.glClearColor(0f, 0.7f, 0.1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        input.update();
+
         stage.act();
         stage.draw();
+
+        uiStage.act();
+        uiStage.draw();
 
         globalPopulation = 0;
         for (Settlement settlement : settlements) {

@@ -1,5 +1,7 @@
 package com.beariksonstudios.existence.scenes.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
@@ -8,14 +10,34 @@ import com.beariksonstudios.existence.gameobjects.settlement.Settlement;
  * Created by BrianErikson on 8/9/2015.
  */
 public class InputProcessor implements com.badlogic.gdx.InputProcessor {
+    public static float MOVE_SPEED = 500f;
     private final Game game;
+    private final Camera camera;
 
     public InputProcessor(Game game) {
         this.game = game;
+        camera = game.getStage().getCamera();
+    }
+
+    public void update() {
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            camera.position.add(0f, MOVE_SPEED * Gdx.graphics.getDeltaTime(), 0f);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            camera.position.add(0f, -MOVE_SPEED * Gdx.graphics.getDeltaTime(), 0f);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            camera.position.add(MOVE_SPEED * Gdx.graphics.getDeltaTime(), 0f, 0f);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            camera.position.add(-MOVE_SPEED * Gdx.graphics.getDeltaTime(), 0f, 0f);
+        }
     }
 
     @Override
     public boolean keyDown(int keycode) {
+
         return false;
     }
 
