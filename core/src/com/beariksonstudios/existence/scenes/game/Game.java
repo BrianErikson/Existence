@@ -3,6 +3,7 @@ package com.beariksonstudios.existence.scenes.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -272,6 +273,21 @@ public class Game implements Screen {
     public void show() {
         
     }
+    public void cameraBounds(){
+        Camera camera = stage.getCamera();
+        if(camera.position.x >= MAP_SIZE){
+            camera.position.x = MAP_SIZE;
+        }
+        else if(camera.position.x <= 0){
+            camera.position.x = 0;
+        }
+        if(camera.position.y >= MAP_SIZE){
+            camera.position.y = MAP_SIZE;
+        }
+        else if(camera.position.y <= 0){
+            camera.position.y = 0;
+        }
+    }
 
     @Override
     public void render(float delta) {
@@ -284,6 +300,7 @@ public class Game implements Screen {
 
         if (openPrompt == null) {
             input.update(); // game input (WSAD, etc)
+            cameraBounds();
         }
 
         stage.act();

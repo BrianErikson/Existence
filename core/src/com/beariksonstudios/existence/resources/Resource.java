@@ -4,11 +4,24 @@ package com.beariksonstudios.existence.resources;
  * Created by Neal on 8/5/2015.
  */
 public enum Resource {
-    FISH,
-    WOOD,
-    WATER,
+    //Fertile land
     GRAIN,
     FRUIT,
+    HIGH_FRUCTOSE_CORN_SYRUP,
+    ORGANIC_VEGITABLES,
+    //Lakes
+    WATER,
+    FISH,
+    CRAB,
+    HYDROELECTRIC_PLANT,
+    //Mountains
     STONE,
-    METAL
+    IRON,
+    GOLD,
+    URANIUM,
+    // Forest
+    WOOD,
+    VENISON,
+    PAPER,
+    OIL,
 }

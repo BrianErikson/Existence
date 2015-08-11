@@ -24,7 +24,6 @@ public abstract class Prompt {
         window.setHeight(Gdx.graphics.getHeight() / 3f);
         window.setKeepWithinStage(true);
 
-        window.addCloseButton();
 
         // stifle new windows if clicking on window but not widgets
         window.addListener(new EventListener() {

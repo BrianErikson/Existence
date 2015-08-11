@@ -45,6 +45,7 @@ public class Settlement extends Image implements ClickableObject {
     private ArrayList<MapResource> claimedResources = new ArrayList<MapResource>();
 
     private boolean isTarget = false;
+    private String resourceListing = "";
 
     public Settlement(Game game, long initialPopulation, float x, float y, String name) {
         this.game = game;
@@ -56,7 +57,8 @@ public class Settlement extends Image implements ClickableObject {
         startYear = game.getYearsFromStart();
 
         type = new Village(this);
-        setGrowthRate(type.getGrowthRate());
+        setupSettlementType();
+
         position = new Vector2(x,y);
         setPosition(position.x - getImageWidth() / 2f, position.y - getImageHeight() / 2f);
 
@@ -105,6 +107,8 @@ public class Settlement extends Image implements ClickableObject {
 
         checkSettlementType();
 
+        checkSettlementType();
+
         type.update(currentPopulation);
         updateUI();
     }
@@ -136,32 +140,38 @@ public class Settlement extends Image implements ClickableObject {
     }
 
     public String getResources() {
-        return type.getResources();
+        return resourceListing;
     }
 
-    public void checkSettlementType() {
+    private void checkSettlementType() {
         if (this.getPopulation() >= 1000000) {
             if (!(type instanceof Metropolis)) {
                 type = new Metropolis(this);
-                this.setGrowthRate(type.getGrowthRate());
+                setupSettlementType();
             }
         } else if (this.getPopulation() >= 100000) {
             if (!(type instanceof City)) {
                 type = new City(this);
-                this.setGrowthRate(type.getGrowthRate());
+                setupSettlementType();
             }
         } else if (this.getPopulation() >= 10000) {
             if (!(type instanceof Town)) {
                 type = new Town(this);
-                this.setGrowthRate(type.getGrowthRate());
+                setupSettlementType();
             }
         }
         else{
             if(!(type instanceof Village)){
                 type = new Village(this);
-                this.setGrowthRate((type.getGrowthRate()));
+                setupSettlementType();
             }
         }
+    }
+
+    private void setupSettlementType() {
+        this.setGrowthRate((type.getGrowthRate() + currentGrowthRate));
+        type.filterResources(this.claimedResources);
+        resourceListing = type.getResources();
     }
 
     public float getCurrentGrowthRate() {
@@ -170,9 +180,11 @@ public class Settlement extends Image implements ClickableObject {
 
     public void setGrowthRate(float newGrowthRate) {
         currentGrowthRate = newGrowthRate;
+        System.out.println("Current Growth rate set to: " + currentGrowthRate);
         lastGrowthChange = game.getYearsFromStart();
         initialPopulation = currentPopulation;
         lastPopCalc = initialPopulation * Math.pow(Math.E, (getCurrentGrowthRate() * (age - lastGrowthChange)));
+
     }
 
     public double calculatePopulation() {
@@ -195,7 +207,8 @@ public class Settlement extends Image implements ClickableObject {
     public void addClaimedResource(MapResource resource) {
         claimedResources.add(resource);
         adjustGrowthRate(resource);
-        System.out.println(currentGrowthRate);
+        type.filterResources(this.claimedResources);
+        resourceListing = type.getResources();
     }
 
     public void addClaimedResource(MapResource... resources){
@@ -208,25 +221,52 @@ public class Settlement extends Image implements ClickableObject {
 
         for (Resource specificResource : resource.getSpecificResources()) {
             switch(specificResource) {
-                case FISH:
-                    newGrowthRate += 0.3d;
-                    break;
-                case WOOD:
-                    newGrowthRate += 0.3d;
-                    break;
-                case WATER:
-                    newGrowthRate += 0.3d;
-                    break;
                 case GRAIN:
                     newGrowthRate += 0.3d;
                     break;
                 case FRUIT:
                     newGrowthRate += 0.3d;
                     break;
+                case HIGH_FRUCTOSE_CORN_SYRUP:
+                    newGrowthRate += 0.3d;
+                    break;
+                case ORGANIC_VEGITABLES:
+                    newGrowthRate += 0.3d;
+                    break;
+                case WATER:
+                    newGrowthRate += 0.3d;
+                    break;
+                case FISH:
+                    newGrowthRate += 0.3d;
+                    break;
+                case CRAB:
+                    newGrowthRate += 0.3d;
+                    break;
+                case HYDROELECTRIC_PLANT:
+                    newGrowthRate += 0.3d;
+                    break;
                 case STONE:
                     newGrowthRate += 0.3d;
                     break;
-                case METAL:
+                case IRON:
+                    newGrowthRate += 0.3d;
+                    break;
+                case GOLD:
+                    newGrowthRate += 0.3d;
+                    break;
+                case URANIUM:
+                    newGrowthRate += 0.3d;
+                    break;
+                case WOOD:
+                    newGrowthRate += 0.3d;
+                    break;
+                case VENISON:
+                    newGrowthRate += 0.3d;
+                    break;
+                case PAPER:
+                    newGrowthRate += 0.3d;
+                    break;
+                case OIL:
                     newGrowthRate += 0.3d;
                     break;
             }
